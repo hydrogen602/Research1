@@ -1,0 +1,16 @@
+
+n-body integration in c++
+
+struct/class: body
+
+vector of bodies
+
+Forces: Gravity (& Collisions)
+
+Collisions: f = -kx + beta * dx/dt
+x is overlap
+
+x, y, z
+
+pick an integrater
+
