@@ -14,3 +14,8 @@ x, y, z
 
 pick an integrater
 
+length: AU
+time: year / pi
+mass: mass of the sun
+G: 1
+
