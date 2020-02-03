@@ -4,7 +4,7 @@
 
 #define square(x) ((x) * (x))
 
-Body::Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg) {
+Body::Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m): mass{m} {
     x = xArg;
     y = yArg;
     z = zArg;
@@ -37,7 +37,15 @@ void Body::integrate(double ax, double ay, double az) {
 }
 
 vect3 Body::unitVectTo(Body b) {
-    vect3 c;
-    v.x = b
-}
+    double d = distanceFrom(b); // length of vector
 
+    vect3 c;
+    c.x = b.x - x;
+    c.y = b.y - y;
+    c.z = b.z - z;
+    // now c is a vector pointing to b from this
+    c.x /= d;
+    c.y /= d;
+    c.z /= d;
+    return c;
+}

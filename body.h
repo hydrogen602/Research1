@@ -21,7 +21,9 @@ private:
     double vz;
 
 public:
-    Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg);
+    const double mass; // in solor masses
+    
+    Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m);
 
     double distanceFrom(Body b);
 
