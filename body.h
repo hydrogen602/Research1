@@ -21,17 +21,19 @@ private:
     double vz;
 
 public:
-    const double mass; // in solor masses
+    const double mass; // in solar masses
     
     Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m);
 
-    double distanceFrom(Body b);
+    double distanceFrom(const Body &b) const;
 
-    double distanceSquaredFrom(Body b);
+    double distanceSquaredFrom(const Body &b) const;
 
-    void integrate(double ax, double ay, double az);
+    void integrate(const vect3 &acc, double h);
 
-    vect3 unitVectTo(Body b);
+    vect3 unitVectTo(const Body &b) const;
+
+    void printOut() const;
 };
 
 #endif

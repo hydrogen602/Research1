@@ -1,11 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstdio>
 #include "body.h"
 
 #include "test.cpp"
 
-void findAcceleration(std::vector<Body> system) {
+void findAcceleration(std::vector<Body> &system, double h) {
     for (int i = 0; i < system.size(); ++i) {
         vect3 accVector = {0, 0, 0};
 
@@ -24,13 +25,17 @@ void findAcceleration(std::vector<Body> system) {
 
                 accVector.x += dirUnitVec.x;
                 accVector.y += dirUnitVec.y;
-                accVector.z += dirUnitVec.z;
+                accVector.z += dirUnitVec.z; // i and j forces get calculated twice
             }
         }
 
         // found total acceleration
 
+        // euler
 
+        // printf("accVector = <%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
+
+        system[i].integrate(accVector, h);
     }
 }
 
@@ -54,6 +59,30 @@ void testGroup1() {
     printResult();
 }
 
+void testGroup2() {
+    std::vector<Body> sys;
+
+    sys.push_back(Body{0, 0, 0, 0, 0, 0, 1});
+    sys.push_back(Body{1, 0, 0, 0, 1, 0, 1e-8});
+
+    std::cerr << "N-body simulation\n";
+    std::cerr << "Number of bodies: " << sys.size() << '\n';
+
+    double h = 1e-3;
+    for (double i = 0; i < 3.141592653589793; i += h) {
+        findAcceleration(sys, h);
+        std::cout << "i = " << i << "\n";
+        for (int i = 0; i < 2; ++i) {
+            
+            sys[i].printOut();
+        }
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        sys[i].printOut();
+    }    
+}
+
 int main(void) {
-    testGroup1();
+    testGroup2();
 }

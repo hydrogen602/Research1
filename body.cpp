@@ -1,5 +1,5 @@
 #include <cmath>
-#include <iostream>
+#include <cstdio>
 #include "body.h"
 
 #define square(x) ((x) * (x))
@@ -13,7 +13,7 @@ Body::Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, do
     vz = vzArg;
 }
 
-double Body::distanceFrom(Body b) {
+double Body::distanceFrom(const Body &b) const {
     // std::cout << square(b.x - x) << ' ';
     // std::cout << square(b.y - y) << ' ';
     // std::cout << square(b.z - z) << '\n';
@@ -21,22 +21,26 @@ double Body::distanceFrom(Body b) {
     return sqrt(square(b.x - x) + square(b.y - y) + square(b.z - z));
 }
 
-double Body::distanceSquaredFrom(Body b) {
+double Body::distanceSquaredFrom(const Body &b) const {
     return square(b.x - x) + square(b.y - y) + square(b.z - z);
 }
 
-void Body::integrate(double ax, double ay, double az) {
+void Body::integrate(const vect3 &acc, double h) {
     // euler for now
-    double h = 0.1;
-
     // deltaV = a * h 
 
-    vx += ax * h;
-    vy += ay * h;
-    vz += az * h;
+    printf("accVector = <%e, %e, %e> %e\n", acc.x, acc.y, acc.z, h);
+
+    vx += acc.x * h;
+    vy += acc.y * h;
+    vz += acc.z * h;
+
+    x += vx * h;
+    y += vy * h;
+    z += vz * h;
 }
 
-vect3 Body::unitVectTo(Body b) {
+vect3 Body::unitVectTo(const Body &b) const {
     double d = distanceFrom(b); // length of vector
 
     vect3 c;
@@ -48,4 +52,8 @@ vect3 Body::unitVectTo(Body b) {
     c.y /= d;
     c.z /= d;
     return c;
+}
+
+void Body::printOut() const {
+    printf("pos = <%e, %e, %e> v = <%e, %e, %e>\n", x, y, z, vx, vy, vz);
 }
