@@ -4,10 +4,9 @@
 
 #define square(x) ((x) * (x))
 
-Body::Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m): 
-    mass{m}, x{xArg}, y{yArg}, z{zArg}, vx{vxArg}, vy{vyArg}, vz{vzArg} {}
+Body::Body(vect3 &position, vect3 &velocity, double m): mass{m}, pos{position}, vel{velocity} {}
 
-Body::Body(const Body& src): mass{src.mass}, x{src.x}, y{src.y}, z{src.z}, vx{src.vx}, vy{src.vy}, vz{src.vz} {
+Body::Body(const Body& src): mass{src.mass}, pos{src.pos}, vel{src.vel} {
     printf("copy\n");
 }
 
@@ -16,11 +15,11 @@ double Body::distanceFrom(const Body &b) const {
     // std::cout << square(b.y - y) << ' ';
     // std::cout << square(b.z - z) << '\n';
 
-    return sqrt(square(b.x - x) + square(b.y - y) + square(b.z - z));
+    return sqrt(square(b.pos.x - pos.x) + square(b.pos.y - pos.y) + square(b.pos.z - pos.z));
 }
 
 double Body::distanceSquaredFrom(const Body &b) const {
-    return square(b.x - x) + square(b.y - y) + square(b.z - z);
+    return square(b.pos.x - pos.x) + square(b.pos.y - pos.y) + square(b.pos.z - pos.z);
 }
 
 void Body::integrate(const vect3 &acc, double h) {
@@ -29,38 +28,38 @@ void Body::integrate(const vect3 &acc, double h) {
 
     // printf("accVector = <%e, %e, %e> %e\n", acc.x, acc.y, acc.z, h);
 
-    vx += acc.x * h;
-    vy += acc.y * h;
-    vz += acc.z * h;
+    vel.x += acc.x * h;
+    vel.y += acc.y * h;
+    vel.z += acc.z * h;
 
-    x += vx * h;
-    y += vy * h;
-    z += vz * h;
+    pos.x += vel.x * h;
+    pos.y += vel.y * h;
+    pos.z += vel.z * h;
 }
 
 void Body::integrate(const kDelta &k, double factor) {
     // factor is dimensionless - use only with rk4
 
-    vx += k.dvx * factor;
-    vy += k.dvy * factor;
-    vz += k.dvz * factor;
+    vel.x += k.dvx * factor;
+    vel.y += k.dvy * factor;
+    vel.z += k.dvz * factor;
 
-    x += k.dx * factor;
-    y += k.dy * factor;
-    z += k.dz * factor;
+    pos.x += k.dx * factor;
+    pos.y += k.dy * factor;
+    pos.z += k.dz * factor;
 }
 
 vect3 Body::getIntegratedVelocity(const vect3 &acc, double h) const {
-    return vect3{vx + acc.x * h, vy + acc.y * h, vz + acc.z * h};
+    return vect3{vel.x + acc.x * h, vel.y + acc.y * h, vel.z + acc.z * h};
 }
 
 vect3 Body::unitVectTo(const Body &b) const {
     double d = distanceFrom(b); // length of vector
 
     vect3 c;
-    c.x = b.x - x;
-    c.y = b.y - y;
-    c.z = b.z - z;
+    c.x = b.pos.x - pos.x;
+    c.y = b.pos.y - pos.y;
+    c.z = b.pos.z - pos.z;
     // now c is a vector pointing to b from this
     c.x /= d;
     c.y /= d;
@@ -69,5 +68,5 @@ vect3 Body::unitVectTo(const Body &b) const {
 }
 
 void Body::printOut() const {
-    printf("pos = <%e, %e, %e> v = <%e, %e, %e>\n", x, y, z, vx, vy, vz);
+    printf("pos = <%e, %e, %e> v = <%e, %e, %e>\n", pos.x, pos.y, pos.z, vel.x, vel.y, vel.z);
 }

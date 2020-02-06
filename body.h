@@ -22,19 +22,13 @@ typedef struct kDeltaVector {
 class Body
 {
 private:
-
-    double x;
-    double y;
-    double z;
-
-    double vx;
-    double vy;
-    double vz;
+    vect3 pos;
+    vect3 vel;
 
 public:
     const double mass; // in solar masses
     
-    Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m);
+    Body(vect3 &position, vect3 &velocity, double m);
 
     Body(const Body& src);
 
