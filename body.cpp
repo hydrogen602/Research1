@@ -1,14 +1,20 @@
 #include <cmath>
 #include <cstdio>
 #include "body.h"
+#include "kDeltaVector.h"
 
 #define square(x) ((x) * (x))
 
 Body::Body(vect3 &position, vect3 &velocity, double m): mass{m}, pos{position}, vel{velocity} {}
 
 Body::Body(const Body& src): mass{src.mass}, pos{src.pos}, vel{src.vel} {
-    printf("copy\n");
+    #if DEBUG
+        printf("copy\n");
+    #endif
 }
+
+Body::Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m): 
+    mass{m}, pos{vect3{xArg, yArg, zArg}}, vel{vect3{vxArg, vyArg, vzArg}} {}
 
 double Body::distanceFrom(const Body &b) const {
     // std::cout << square(b.x - x) << ' ';

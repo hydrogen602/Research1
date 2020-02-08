@@ -1,6 +1,7 @@
 #ifndef body_H_
 #define body_H_
 #include <cmath>
+#include "kDeltaVector.h"
 
 #define ERR_VECTOR_SIZE_MISMATCH 42
 
@@ -9,15 +10,6 @@ typedef struct vector3 {
     double y;
     double z;
 } vect3;
-
-typedef struct kDeltaVector {
-    double dx;
-    double dy;
-    double dz;
-    double dvx;
-    double dvy;
-    double dvz;
-} kDelta; // d is delta, a small step in the simulation
 
 class Body
 {
@@ -29,6 +21,8 @@ public:
     const double mass; // in solar masses
     
     Body(vect3 &position, vect3 &velocity, double m);
+
+    Body(double xArg, double yArg, double zArg, double vxArg, double vyArg, double vzArg, double m);
 
     Body(const Body& src);
 
