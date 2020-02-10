@@ -8,7 +8,7 @@
 Body::Body(vect3 &position, vect3 &velocity, double m): mass{m}, pos{position}, vel{velocity} {}
 
 Body::Body(const Body& src): mass{src.mass}, pos{src.pos}, vel{src.vel} {
-    #if DEBUG
+    #if DEBUG_COPY
         printf("copy\n");
     #endif
 }
@@ -55,8 +55,8 @@ void Body::integrate(const kDelta &k, double factor) {
     pos.z += k.dz * factor;
 }
 
-vect3 Body::getIntegratedVelocity(const vect3 &acc, double h) const {
-    return vect3{vel.x + acc.x * h, vel.y + acc.y * h, vel.z + acc.z * h};
+vect3 Body::getIntegratedPosition(const vect3 &dv, double h) const {
+    return vect3{(vel.x + dv.x) * h, (vel.y + dv.y) * h, (vel.z + dv.z) * h};
 }
 
 vect3 Body::unitVectTo(const Body &b) const {

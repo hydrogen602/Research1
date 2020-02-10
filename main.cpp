@@ -72,9 +72,10 @@ std::vector<kDelta> getKDelta(std::vector<Body> &system, double h) {
         // printf("accVector = <%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
 
         //system[i].integrate(accVector, h);
-        vect3 v = system[i].getIntegratedVelocity(accVector, h);
+        vect3 dv = {accVector.x * h, accVector.y * h, accVector.z * h}; //system[i].getIntegratedVelocity(accVector, h);
         // k1 = h * F(...)
-        k.push_back(kDelta(v.x * h, v.y * h, v.z * h, accVector.x * h, accVector.y * h, accVector.z * h));
+        vect3 x = system[i].getIntegratedPosition(dv, h);
+        k.push_back(kDelta(x.x, x.y, x.z, accVector.x * h, accVector.y * h, accVector.z * h));
     }
 
     return k;
@@ -131,20 +132,45 @@ void rk4(std::vector<Body> &system, double h) {
     // k1 = h * F(xn, yn)
     std::vector<kDelta> k1 = getKDelta(system, h);
 
+    std::cout << "k1: ";
+    for (int i = 0; i < k1.size(); i++)
+    {
+        k1[i].printOut();
+    }
+    
+
     std::vector<Body> shiftedState = newAdvanceState(system, k1, 1.0/2);
 
     // k2 = h * F(xn + h/2, yn + k1/2)
     std::vector<kDelta> k2 = getKDelta(shiftedState, h);
+
+    std::cout << "k2: ";
+    for (int i = 0; i < k2.size(); i++)
+    {
+        k2[i].printOut();
+    }
 
     shiftedState = newAdvanceState(system, k2, 1.0/2);
 
     // k3 = hF(xn + h/2, yn + k2/2)
     std::vector<kDelta> k3 = getKDelta(shiftedState, h);
 
+    std::cout << "k3: ";
+    for (int i = 0; i < k3.size(); i++)
+    {
+        k3[i].printOut();
+    }
+
     shiftedState = newAdvanceState(system, k3, 1);
 
     // k4 = hF(xn + h, yn + k3)
     std::vector<kDelta> k4 = getKDelta(shiftedState, h);
+
+    std::cout << "k4: ";
+    for (int i = 0; i < k4.size(); i++)
+    {
+        k4[i].printOut();
+    }
 
     // y_n+1 = y_n + 1/6 * (k1 + 2k2 + 3k3 + k4)
 
@@ -158,6 +184,8 @@ void rk4(std::vector<Body> &system, double h) {
         tmp += k2[i] * 2;
         tmp += k3[i] * 2;
         tmp += k4[i];
+        std::cout << "combined k: ";
+        tmp.printOut();
         K.push_back(tmp);
     }
 
@@ -233,10 +261,10 @@ void testGroup3_RK4() {
 
     double h = 1e-3;
     for (double i = 0; i < 3.141592653589793; i += h) {
-        rk4(sys, h);
         #if DEBUG
             std::cout << "i = " << i << "\n";
         #endif
+        rk4(sys, h);
         for (int i = 0; i < 2; ++i) {
             #if DEBUG
                 sys[i].printOut();

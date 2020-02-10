@@ -37,7 +37,7 @@ public:
     // as rk4 asks for things like yn + k1/2
     //  - here 1/2 is the factor
 
-    vect3 getIntegratedVelocity(const vect3 &acc, double h) const;
+    vect3 getIntegratedPosition(const vect3 &v, double h) const;
 
     vect3 unitVectTo(const Body &b) const;
 

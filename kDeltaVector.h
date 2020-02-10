@@ -1,7 +1,8 @@
 #ifndef kDeltaVector_H_
 #define kDeltaVector_H_
 
-#define DEBUG 0
+#define DEBUG 1
+#define DEBUG_COPY 0
 
 class kDeltaVector {
 public:

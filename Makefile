@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -pedantic -O -std=c99
+CFLAGS = -Wall -pedantic -Ofast
 LDLIBS = -lm
 
 SRCS := $(wildcard *.cpp)
