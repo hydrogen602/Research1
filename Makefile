@@ -13,6 +13,9 @@ run: main
 	./main > run.log
 
 main: ${OBJS}
+	${CC} -o main state.o ${LDLIBS}
+
+mainOld: ${OBJS}
 	${CC} -o main main.o body.o kDeltaVector.o ${LDLIBS}
 
 %.o: %.c ${HEADERS}
