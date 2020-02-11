@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -pedantic -Ofast
+CFLAGS = -Wall -pedantic -g #-Ofast
 LDLIBS = -lm
 
 SRCS := $(wildcard *.cpp)
@@ -7,10 +7,10 @@ OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
 
-.PHONY = main clean run
+.PHONY = clean run
 
 run: main
-	./main | tee run.log | less
+	./main > run.log
 
 main: ${OBJS}
 	${CC} -o main state.o vector.o ${LDLIBS}

@@ -4,8 +4,15 @@
 #include "vector.h"
 
 #define ERR_VECTOR_SIZE_MISMATCH 42
+#define ERR_VECTOR_OUT_OF_BOUNDS 43
 
-#define DEBUG 1
+#define DEBUG 0
+
+typedef struct vector3 {
+    double x;
+    double y;
+    double z;
+} vect3;
 
 class State
 {
@@ -17,15 +24,21 @@ private:
 public:    
     State(double hVal);
 
-    ~State();
-
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m);
 
     int size() const;
 
     void printOut() const;
 
+    void derivative(Vector& d);
+
+    void euler1();
+
+    void kickStep1();
+
     void rk4();
+
+    State operator+=(Vector delta);
 };
 
 #endif

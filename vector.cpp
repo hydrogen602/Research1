@@ -2,14 +2,35 @@
 #include "vector.h"
 #include "state.h"
 
-Vector Vector::operator*=(double h) {
+Vector::Vector() {
+}
+
+Vector::Vector(int n) {
+    data.resize(n, 0.0);
+}
+
+Vector::Vector(Vector& src) {
+    data.resize(src.data.size(), 0);
+    for (int i = 0; i < src.data.size(); ++i) {
+        data[i] = src.data[i];
+    }
+}
+
+Vector& Vector::operator=(const Vector& other) {
+    data.resize(other.data.size(), 0);
+    for (int i = 0; i < other.data.size(); ++i) {
+        data[i] = other.data[i];
+    }
+}
+
+Vector& Vector::operator*=(double h) {
     for (int i = 0; i < data.size(); ++i) {
         data[i] *= h;
     }
     return *this;
 }
 
-Vector Vector::operator+=(Vector other) {
+Vector& Vector::operator+=(const Vector& other) {
     if (data.size() != other.data.size()) {
         throw ERR_VECTOR_SIZE_MISMATCH;
     }
@@ -17,6 +38,17 @@ Vector Vector::operator+=(Vector other) {
         data[i] += other.data[i];
     }
     return *this;
+}
+
+double& Vector::operator[](int i) {
+    if (i < 0 || i >= data.size()) {
+        throw ERR_VECTOR_OUT_OF_BOUNDS;
+    }
+    return data[i];
+}
+
+void Vector::resize(int n, double d) {
+    data.resize(n, d);
 }
 
 void Vector::addBody(double x, double y, double z, double vx, double vy, double vz) {
@@ -34,4 +66,12 @@ int Vector::size() const {
 
 void Vector::printOut(int i) const {
     printf("  <%e, %e, %e, %e, %e, %e>\n", data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5]);
+}
+
+void Vector::printOut() const {
+    printf("[\n");
+    for (int i = 0; i < data.size(); i += 6) {
+        printf("  <%e, %e, %e, %e, %e, %e>\n", data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5]);
+    }
+    printf("]\n");
 }
