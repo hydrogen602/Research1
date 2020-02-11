@@ -151,23 +151,19 @@ void State::rk4() {
     k1 *= h;
 
     // k2 = hF(xn + h/2, yn + k1/2)
-    k1 *= 1.0/2;
-    (*this) += k1;
+    (*this) += k1 / 2;
 
     Vector k2;
     derivative(k2);
-
     k2 *= h;
 
     data = oldState;
     // k3 = hF(xn + h/2, yn + k2/2)
     
-    k2 *= 1.0/2;
-    (*this) += k2;
+    (*this) += k2 / 2;
 
     Vector k3;
     derivative(k3);
-
     k3 *= h;
 
     data = oldState;
@@ -177,15 +173,12 @@ void State::rk4() {
 
     Vector k4;
     derivative(k4);
-
     k4 *= h;
 
     data = oldState;
     // 1/6 * (k1 + 2k2 + 2k3 + k4)
 
     Vector K(data.size());
-
-    double checker = 0;
 
     K += k1;
 
@@ -199,8 +192,8 @@ void State::rk4() {
 
     K *= 1.0/6;
 
-    printf("Zero: %e\n", K[0] - checker);
     (*this) += K;
+
 }
 
 State State::operator+=(Vector delta) {

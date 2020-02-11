@@ -10,12 +10,13 @@ private:
 public:
     Vector();
     Vector(int i);
-    Vector(Vector& src);
+    Vector(const Vector& src);
 
     Vector& operator*=(double h);
     Vector& operator+=(const Vector& other);
     double& operator[](int i);
     Vector& operator=(const Vector& other);
+    Vector operator/(double h) const;
 
     void addBody(double x, double y, double z, double vx, double vy, double vz);
 

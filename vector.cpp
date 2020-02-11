@@ -9,7 +9,7 @@ Vector::Vector(int n) {
     data.resize(n, 0.0);
 }
 
-Vector::Vector(Vector& src) {
+Vector::Vector(const Vector& src) {
     data.resize(src.data.size(), 0);
     for (int i = 0; i < src.data.size(); ++i) {
         data[i] = src.data[i];
@@ -45,6 +45,14 @@ double& Vector::operator[](int i) {
         throw ERR_VECTOR_OUT_OF_BOUNDS;
     }
     return data[i];
+}
+
+Vector Vector::operator/(double m) const {
+    Vector v(*this);
+    for (int i = 0; i < data.size(); ++i) {
+        v[i] = data[i] / m;
+    }
+    return v;
 }
 
 void Vector::resize(int n, double d) {
