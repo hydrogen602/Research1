@@ -10,10 +10,10 @@ HEADERS := $(wildcard *.h)
 .PHONY = main clean run
 
 run: main
-	./main > run.log
+	./main | tee run.log | less
 
 main: ${OBJS}
-	${CC} -o main state.o ${LDLIBS}
+	${CC} -o main state.o vector.o ${LDLIBS}
 
 mainOld: ${OBJS}
 	${CC} -o main main.o body.o kDeltaVector.o ${LDLIBS}

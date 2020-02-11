@@ -3,40 +3,6 @@
 #include <cstdio>
 #include "state.h"
 
-Vector Vector::operator*=(double h) {
-    for (int i = 0; i < data.size(); ++i) {
-        data[i] *= h;
-    }
-    return *this;
-}
-
-Vector Vector::operator+=(Vector other) {
-    if (data.size() != other.data.size()) {
-        throw ERR_VECTOR_SIZE_MISMATCH;
-    }
-    for (int i = 0; i < data.size(); ++i) {
-        data[i] += other.data[i];
-    }
-    return *this;
-}
-
-void Vector::addBody(double x, double y, double z, double vx, double vy, double vz) {
-    data.push_back(x);
-    data.push_back(y);
-    data.push_back(z);
-    data.push_back(vx);
-    data.push_back(vy);
-    data.push_back(vz);
-}
-
-int Vector::size() const {
-    return data.size();
-}
-
-void Vector::printOut(int i) const {
-    printf("  <%e, %e, %e, %e, %e, %e>\n", data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5]);
-}
-
 State::State(double hVal): h{hVal} {}
 
 State::~State() {}
@@ -59,6 +25,7 @@ void State::printOut() const {
   std::cout << "[\n";
   for (int i = 0; i < data.size(); i += 6) {
     printf("  ");
+    data.printOut(i);
   }
   std::cout << "]\n";
 }
@@ -85,6 +52,15 @@ void State::rk4() {
     Vector k1;
 }
 
+void testGroup1() {
+    double h = 1e-3;
+    State sys(h);
+
+    sys.addBody(0, 0, 0, 0, 0, 0, 1);
+    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
+
+    sys.printOut();
+}
 
 void testGroup3_RK4() {
     double h = 1e-3;
@@ -105,7 +81,7 @@ void testGroup3_RK4() {
 
 
         #if DEBUG
-        sys[i].printOut();
+        sys.printOut();
         #endif
     }
 
@@ -115,7 +91,7 @@ void testGroup3_RK4() {
 
 int main() {
   std::cerr << "Starting...\n";
-  testGroup3_RK4();
+  testGroup1();
   std::cerr << "Done\n";
   return 0;
 }
