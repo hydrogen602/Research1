@@ -21,6 +21,10 @@ private:
     std::vector<double> masses; // in solar masses
     const double h;
 
+    double computePotentialEnergy() const;
+
+    double computeKineticEnergy() const;
+
 public:    
     State(double hVal);
 
@@ -30,7 +34,7 @@ public:
 
     void printOut() const;
 
-    void derivative(Vector& d);
+    void derivative(Vector& d) const;
 
     void euler1();
 
@@ -39,6 +43,8 @@ public:
     void rk4();
 
     State operator+=(Vector delta);
+
+    double computeEnergy() const;
 };
 
 #endif

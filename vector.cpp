@@ -47,6 +47,13 @@ double& Vector::operator[](int i) {
     return data[i];
 }
 
+const double& Vector::operator[](int i) const {
+    if (i < 0 || i >= data.size()) {
+        throw ERR_VECTOR_OUT_OF_BOUNDS;
+    }
+    return data[i];
+}
+
 Vector Vector::operator/(double m) const {
     Vector v(*this);
     for (int i = 0; i < data.size(); ++i) {

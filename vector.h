@@ -15,6 +15,7 @@ public:
     Vector& operator*=(double h);
     Vector& operator+=(const Vector& other);
     double& operator[](int i);
+    const double& operator[](int i) const;
     Vector& operator=(const Vector& other);
     Vector operator/(double h) const;
 
