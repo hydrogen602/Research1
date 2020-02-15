@@ -44,6 +44,7 @@ double State::computeKineticEnergy() const {
 
         double vSq = square(data[i + 3]) + square(data[i + 4]) + square(data[i + 5]);
         energy += 0.5 * masses[i / 6] * vSq;
+        //printf("KE[%d] = %e\n", i / 6, 0.5 * masses[i / 6] * vSq);
     }
 
     return energy;
@@ -63,6 +64,8 @@ double State::computePotentialEnergy() const {
 
             // G is 1
             energy += - (masses[i / 6] * masses[j / 6] / r);
+
+            //printf("PE[%d] on [%d] = %e\n", i / 6, j / 6, - (masses[i / 6] * masses[j / 6] / r));
         }
         
     }
@@ -335,15 +338,17 @@ void testGroup4_Energy() {
     std::cerr << "N-body simulation\n";
     std::cerr << "Number of bodies: " << sys.size() << '\n';
 
-    for (double i = 0; i < orbits * 2 * PI; i += h) {
+    for (double i = 0; i < orbits * PI * 2; i += h) { // orbits * 2 * PI
 
-        sys.euler1();
+        sys.kickStep1();
 
-        printf("t = %.3f; E = %e\n", i, sys.computeEnergy());
+        //printf("t = %.3f; E = %e\n", i, sys.computeEnergy());
+
+        printf("%.3f\t%e\n", i, sys.computeEnergy());
     }
 
-    std::cout << "Final Result:\n";
-    sys.printOut(); 
+    //std::cout << "Final Result:\n";
+    //sys.printOut();
 }
 
 int main() {
