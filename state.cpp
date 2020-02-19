@@ -6,10 +6,6 @@
 
 #define square(x) ((x) * (x))
 
-const double PI = 3.141592653589793;
-
-const int orbits = 1000;
-
 State::State(double hVal): h{hVal} {}
 
 void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m) {
@@ -28,7 +24,7 @@ int State::size() const {
 
 void State::printOut() const {
   std::cout << "[\n";
-  for (int i = 0; i < data.size(); i += 6) {
+  for (unsigned int i = 0; i < data.size(); i += 6) {
     printf("  ");
     data.printOut(i);
   }
@@ -39,7 +35,7 @@ double State::computeKineticEnergy() const {
     //  1/2 m v^2
     double energy = 0;
     
-    for (int i = 0; i < data.size(); i += 6) {
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         // v^2 = vx^2 + vy^2 + vz^2
 
         double vSq = square(data[i + 3]) + square(data[i + 4]) + square(data[i + 5]);
@@ -55,9 +51,9 @@ double State::computePotentialEnergy() const {
     // -G (mM) / R
     double energy = 0;
 
-    for (int i = 0; i < data.size(); i += 6)
+    for (unsigned int i = 0; i < data.size(); i += 6)
     {
-        for (int j = i + 6; j < data.size(); j += 6)
+        for (unsigned int j = i + 6; j < data.size(); j += 6)
         {
             // compute R
             double dSq = square(data[i] - data[j]) + square(data[i+1] - data[j+1]) + square(data[i+2] - data[j+2]);
@@ -91,7 +87,7 @@ void State::derivative(Vector& d) const {
      *  [ vz ]      [ az ]
      */
 
-    for (int i = 0; i < data.size(); i += 6) {
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         d[i + 0] = data[i + 3];
         d[i + 1] = data[i + 4];
         d[i + 2] = data[i + 5];
@@ -99,7 +95,7 @@ void State::derivative(Vector& d) const {
 
         vect3 accVector = {0, 0, 0};
 
-        for (int j = 0; j < data.size(); j += 6) {
+        for (unsigned int j = 0; j < data.size(); j += 6) {
             if (i != j) {
                 double dSq = square(data[i] - data[j]) + square(data[i+1] - data[j+1]) + square(data[i+2] - data[j+2]);
                 // a = g * m / r^2
@@ -160,7 +156,7 @@ void State::kickStep1() {
     derivative(k);
     
     // kick
-    for (int i = 0; i < data.size(); i += 6) {
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         k[i + 0] += k[i + 3] * h;
         k[i + 1] += k[i + 4] * h;
         k[i + 2] += k[i + 5] * h;
@@ -248,132 +244,9 @@ State State::operator+=(Vector delta) {
         throw ERR_VECTOR_SIZE_MISMATCH;
     }
 
-    for (int i = 0; i < data.size(); ++i) {
+    for (unsigned int i = 0; i < data.size(); ++i) {
         data[i] += delta[i];
     }
 
     return *this;
-}
-
-void testGroup0() {
-    double h = 1e-3;
-    State sys(h);
-
-    sys.addBody(0, 0, 0, 0, 0, 0, 1);
-    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
-
-    sys.printOut();
-}
-
-void testGroup1_Euler1() {
-    double h = 1e-3;
-    State sys(h);
-
-    sys.addBody(0, 0, 0, 0, 0, 0, 1);
-    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
-
-    std::cerr << "N-body simulation\n";
-    std::cerr << "Number of bodies: " << sys.size() << '\n';
-
-    for (double i = 0; i < PI; i += h) {
-        sys.euler1();
-    }
-
-    std::cout << "Final Result:\n";
-    sys.printOut();
-
-}
-
-void testGroup2_KickStep1() {
-    double h = 1e-3;
-    State sys(h);
-
-    sys.addBody(0, 0, 0, 0, 0, 0, 1);
-    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
-
-    std::cerr << "N-body simulation\n";
-    std::cerr << "Number of bodies: " << sys.size() << '\n';
-
-    for (double i = 0; i < PI; i += h) {
-        sys.kickStep1();
-        //sys.printOut();
-    }
-
-    std::cout << "Final Result:\n";
-    sys.printOut();
-
-}
-
-void testGroup3_RK4() {
-    double h = 1e-3;
-    State sys(h);
-
-    sys.addBody(0, 0, 0, 0, 0, 0, 1);
-    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
-
-    std::cerr << "N-body simulation\n";
-    std::cerr << "Number of bodies: " << sys.size() << '\n';
-
-    for (double i = 0; i < PI; i += h) {
-        #if DEBUG
-        std::cout << "i = " << i << "\n";
-        #endif
-
-        sys.rk4();
-
-        #if DEBUG
-        sys.printOut();
-        #endif
-    }
-
-    std::cout << "Final Result:\n";
-    sys.printOut();
-}
-
-void testGroup4_Energy() {
-    double h = 1e-2;
-    State sys(h);
-
-    sys.addBody(0, 0, 0, 0, 0, 0, 1);
-    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8);
-
-    std::cerr << "N-body simulation\n";
-    std::cerr << "Number of bodies: " << sys.size() << '\n';
-
-    for (double i = 0; i < orbits * PI * 2; i += h) { // orbits * 2 * PI
-
-        sys.euler1();
-
-        //printf("t = %.3f; E = %e\n", i, sys.computeEnergy());
-
-        printf("%.3f\t%e\n", i, sys.computeEnergy());
-    }
-
-    //std::cout << "Final Result:\n";
-    //sys.printOut();
-}
-
-int main() {
-    std::cerr << "Starting...\n";
-
-    //try
-    //{
-        testGroup4_Energy();
-    /*}
-    catch(const int& e)
-    {
-        if (e == ERR_VECTOR_SIZE_MISMATCH) {
-            std::cerr << "ERR_VECTOR_SIZE_MISMATCH\n";
-        }
-        else if (e == ERR_VECTOR_OUT_OF_BOUNDS) {
-            std::cerr << "ERR_VECTOR_OUT_OF_BOUNDS\n";
-        }
-        else {
-            std::cerr << e << '\n';
-        }
-    }*/
-  
-  
-    std::cerr << "Done\n";
-    return 0;
 }
