@@ -7,7 +7,7 @@ OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
 
-.PHONY = clean run
+.PHONY = clean run clean-log
 
 run: main
 	./main > run.log
@@ -23,3 +23,6 @@ mainOld: ${OBJS}
 
 clean:
 	rm -f *.o main
+
+clean-log:
+	rm -f *.log

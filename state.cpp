@@ -8,7 +8,7 @@
 
 const double PI = 3.141592653589793;
 
-const int orbits = 100;
+const int orbits = 1000;
 
 State::State(double hVal): h{hVal} {}
 
@@ -47,12 +47,13 @@ double State::computeKineticEnergy() const {
         //printf("KE[%d] = %e\n", i / 6, 0.5 * masses[i / 6] * vSq);
     }
 
+    //printf("K = %e\n", energy);
     return energy;
 }
 
 double State::computePotentialEnergy() const {
     // -G (mM) / R
-    double energy;
+    double energy = 0;
 
     for (int i = 0; i < data.size(); i += 6)
     {
@@ -69,6 +70,7 @@ double State::computePotentialEnergy() const {
         }
         
     }
+    //printf("U = %e\n", energy);
     return energy;
 }
 
@@ -329,7 +331,7 @@ void testGroup3_RK4() {
 }
 
 void testGroup4_Energy() {
-    double h = 1e-3;
+    double h = 1e-2;
     State sys(h);
 
     sys.addBody(0, 0, 0, 0, 0, 0, 1);
@@ -340,7 +342,7 @@ void testGroup4_Energy() {
 
     for (double i = 0; i < orbits * PI * 2; i += h) { // orbits * 2 * PI
 
-        sys.kickStep1();
+        sys.euler1();
 
         //printf("t = %.3f; E = %e\n", i, sys.computeEnergy());
 
