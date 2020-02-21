@@ -11,7 +11,8 @@ private:
 public:
     Vector();
     Vector(int i);
-    Vector(const Vector& src);
+    Vector(const Vector& src); // copy
+    Vector(Vector&& src); // move
 
     Vector& operator*=(double h);
     Vector& operator+=(const Vector& other);

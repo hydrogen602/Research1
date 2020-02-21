@@ -7,7 +7,7 @@ OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
 
-.PHONY = clean run clean-log
+.PHONY = clean run clean-log trim-log
 
 run: main
 	./main > run.log
@@ -23,3 +23,8 @@ clean:
 
 clean-log:
 	rm -f *.log
+
+trim-log:
+	rm runTrimmed.log
+	awk "NR % 10 == 0 {print}" run.log > runTrimmed.log
+	@echo runTrimmed.log has $(wc -l runTrimmed.log) lines

@@ -16,11 +16,18 @@ Vector::Vector(const Vector& src) {
     }
 }
 
+Vector::Vector(Vector&& src): data{src.data} {
+    // move should destroy original
+
+    // how to ?
+}
+
 Vector& Vector::operator=(const Vector& other) {
     data.resize(other.data.size(), 0);
     for (unsigned int i = 0; i < other.data.size(); ++i) {
         data[i] = other.data[i];
     }
+    printf("Copy assign\n");
     return *this;
 }
 

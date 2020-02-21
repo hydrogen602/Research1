@@ -8,12 +8,14 @@
 
 State::State(double hVal): h{hVal} {}
 
-void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m) {
+void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz) {
   data.addBody(x, y, z, vx, vy, vz);
 
   masses.push_back(m);
 
-  if (masses.size() * 6 != data.size()) {
+  sizes.push_back(sz);
+
+  if (masses.size() * 6 != data.size() || masses.size() != sizes.size()) {
     throw ERR_VECTOR_SIZE_MISMATCH;
   }
 }
@@ -91,6 +93,7 @@ void State::derivative(Vector& d) const {
         d[i + 0] = data[i + 3];
         d[i + 1] = data[i + 4];
         d[i + 2] = data[i + 5];
+
         // find acceleration
 
         vect3 accVector = {0, 0, 0};
@@ -107,6 +110,7 @@ void State::derivative(Vector& d) const {
                 // vect3 dirUnitVec = system[i].unitVectTo(system[j]); // dir of a
 
                 double d = sqrt(dSq); // length of vector
+                // and distance between objects
 
                 vect3 c;
                 c.x = data[j] - data[i];
@@ -116,16 +120,35 @@ void State::derivative(Vector& d) const {
                 c.x /= d;
                 c.y /= d;
                 c.z /= d;
+                // c is displacement unit vector
+
+                vect3 acc = c; // make a copy
 
                 // c is now a unit vector pointing to object j
 
-                c.x *= accScalar;
-                c.y *= accScalar;
-                c.z *= accScalar;
+                acc.x *= accScalar;
+                acc.y *= accScalar;
+                acc.z *= accScalar;
 
-                accVector.x += c.x;
-                accVector.y += c.y;
-                accVector.z += c.z; // i and j forces get calculated twice
+                accVector.x += acc.x;
+                accVector.y += acc.y;
+                accVector.z += acc.z; // i and j forces get calculated twice
+
+                // deal with collisions
+                double deltaX = d - (sizes[j / 6] + sizes[i / 6]);
+                if (deltaX < 0) {
+                    // intersection!
+
+                    // in dir -c (away from other object)
+                    double a = -k * deltaX / masses[i / 6];
+                    c.x *= a;
+                    c.y *= a;
+                    c.z *= a;
+
+                    accVector.x += c.x;
+                    accVector.y += c.y;
+                    accVector.z += c.z;
+                }
             }
         }
 
