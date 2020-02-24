@@ -1,13 +1,13 @@
 #include "graphics.cpp"
 
 int main() {
-    init();
+    graphics::init();
 
-    setScaleFactor(1);
+    graphics::setScaleFactor(1);
 
-    drawPoint(0, 0);
+    graphics::drawPoint(0, 0, 'X');
 
     getch();
 
-    end();
+    graphics::end();
 }
