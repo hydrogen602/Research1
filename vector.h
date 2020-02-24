@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "header.h"
+#include "data/vector3.h"
 
 class Vector
 {
@@ -18,6 +19,10 @@ public:
     Vector& operator+=(const Vector& other);
     double& operator[](unsigned int i);
     const double& operator[](unsigned int i) const;
+
+    vector3 getPos(unsigned int i) const;
+    vector3 getVel(unsigned int i) const;
+
     Vector& operator=(const Vector& other);
     Vector operator/(double h) const;
 

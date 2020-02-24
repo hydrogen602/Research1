@@ -8,13 +8,15 @@
 
 #define DEBUG 0
 
-const double k = 1;
+const double k = 1e10;
 
-typedef struct vector3 {
-    double x;
-    double y;
-    double z;
-} vect3;
+// deprecated
+// 
+// typedef struct vector3 { 
+//     double x;
+//     double y;
+//     double z;
+// } vect3;
 
 class State
 {

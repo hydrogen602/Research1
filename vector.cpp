@@ -1,6 +1,7 @@
 #include <cstdio>
 #include "vector.h"
 #include "state.h"
+#include "data/vector3.h"
 
 Vector::Vector() {
 }
@@ -60,6 +61,14 @@ const double& Vector::operator[](unsigned int i) const {
         throw ERR_VECTOR_OUT_OF_BOUNDS;
     }
     return data[i];
+}
+
+vector3 Vector::getPos(unsigned int i) const {
+    return vector3(data[i * 6 + 0], data[i * 6 + 1], data[i * 6 + 2]);
+}
+
+vector3 Vector::getVel(unsigned int i) const {
+    return vector3(data[i * 6 + 3], data[i * 6 + 4], data[i * 6 + 5]);
 }
 
 Vector Vector::operator/(double m) const {

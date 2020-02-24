@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include "state.h"
+#include "data/vector3.h"
 
 #define square(x) ((x) * (x))
 
@@ -96,7 +97,7 @@ void State::derivative(Vector& d) const {
 
         // find acceleration
 
-        vect3 accVector = {0, 0, 0};
+        vector3 accVector(0, 0, 0);
 
         for (unsigned int j = 0; j < data.size(); j += 6) {
             if (i != j) {
@@ -112,42 +113,38 @@ void State::derivative(Vector& d) const {
                 double d = sqrt(dSq); // length of vector
                 // and distance between objects
 
-                vect3 c;
-                c.x = data[j] - data[i];
-                c.y = data[j+1] - data[i+1];
-                c.z = data[j+2] - data[i+2];
+                vector3 c(data[j] - data[i], data[j+1] - data[i+1], data[j+2] - data[i+2]);
                 // now c is a vector pointing to b from this
-                c.x /= d;
-                c.y /= d;
-                c.z /= d;
+                c /= d;
                 // c is displacement unit vector
 
-                vect3 acc = c; // make a copy
+                vector3 acc = c; // make a copy
 
                 // c is now a unit vector pointing to object j
 
-                acc.x *= accScalar;
-                acc.y *= accScalar;
-                acc.z *= accScalar;
+                acc *= accScalar;
 
-                accVector.x += acc.x;
-                accVector.y += acc.y;
-                accVector.z += acc.z; // i and j forces get calculated twice
+                //fprintf(stderr, "<%e, %e, %e>\n", acc.x, acc.y, acc.z);
+
+                accVector += acc;
+                // i and j forces get calculated twice
 
                 // deal with collisions
                 double deltaX = d - (sizes[j / 6] + sizes[i / 6]);
                 if (deltaX < 0) {
                     // intersection!
 
-                    // in dir -c (away from other object)
-                    double a = -k * deltaX / masses[i / 6];
-                    c.x *= a;
-                    c.y *= a;
-                    c.z *= a;
+                    
 
-                    accVector.x += c.x;
-                    accVector.y += c.y;
-                    accVector.z += c.z;
+                    // in dir -c (away from other object)
+                    double a = -k * -deltaX / masses[i / 6];
+
+                    accVector += (c * a);
+
+                    fprintf(stderr, "object %d\n", i);
+                    fprintf(stderr, "deltaX = %e\n", deltaX);
+                    fprintf(stderr, "<%e, %e, %e>\n", c.x, c.y, c.z);
+                    fprintf(stderr, "<%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
                 }
             }
         }

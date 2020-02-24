@@ -74,9 +74,9 @@ def main(pipe):
                     if idNum in objects:
                         raise KeyError(f"New key {idNum} already exists")
                     d = drawCircle(w,
-                                canvas_width/2 + int(x * scaleFactor),
-                                canvas_height/2 + int(y * scaleFactor),
-                                int(r))
+                                   canvas_width/2 + int(x * scaleFactor),
+                                   canvas_height/2 + int(y * scaleFactor),
+                                   int(r))
 
                     objects[idNum] = d
                     print(f"New object with id={idNum}, x={x}, y={y}, r={r}")
@@ -85,10 +85,10 @@ def main(pipe):
                         raise KeyError(f"key {idNum} not found")
 
                     w.coords(objects[idNum],
-                            canvas_width/2 + int(x * scaleFactor - r),
-                            canvas_height/2 + int(y * scaleFactor - r),
-                            canvas_width/2 + int(x * scaleFactor + r),
-                            canvas_height/2 + int(y * scaleFactor + r))
+                             canvas_width/2 + int(x * scaleFactor - r),
+                             canvas_height/2 + int(y * scaleFactor - r),
+                             canvas_width/2 + int(x * scaleFactor + r),
+                             canvas_height/2 + int(y * scaleFactor + r))
 
             elif line.startswith('set-scale-factor'):
                 parts: List[str] = [l.strip() for l in line.split(':')]
@@ -105,9 +105,8 @@ def main(pipe):
         except BaseException as e:
             print(e, file=sys.stderr)
 
-        
-
     # tk.mainloop()
+
 
 if __name__ == "__main__":
     p = open("graphics.socket", "r")
@@ -115,4 +114,3 @@ if __name__ == "__main__":
         main(p)
     finally:
         p.close()
-

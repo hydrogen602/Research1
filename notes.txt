@@ -19,5 +19,10 @@ time: year / pi
 mass: mass of the sun
 G: 1
 
+Feb 24
+Add energy display
+add color
+bunch of particles with bouncing
+dissipation
 
 

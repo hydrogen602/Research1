@@ -182,11 +182,11 @@ void testGroup5_1_PyGraphics(const int orbits) {
 }
 
 void testGroup6_Collision() {
-    double h = 1e-2;
+    double h = 1e-7;
     State sys(h);
 
-    sys.addBody(-1e-1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(1e-1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(-10e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(10e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
 
     std::cerr << "N-body simulation\n";
     std::cerr << "Number of bodies: " << sys.size() << '\n';
@@ -197,7 +197,7 @@ void testGroup6_Collision() {
         min = s.max_y;
     }
 
-    double factor = min / (1e-0 * 2.5);
+    double factor = min / (1e-4 * 2.5);
 
     graphics::setScaleFactor(factor);
 
@@ -215,7 +215,7 @@ void testGroup6_Collision() {
         }
         refresh();
 
-        usleep(10000);
+        usleep(50000);
     }
 
     graphics::end();

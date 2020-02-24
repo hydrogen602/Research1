@@ -4,6 +4,7 @@ LDLIBS = -lm -lncurses
 
 SRCS := $(wildcard *.cpp)
 SRCS += $(wildcard graphics/*.cpp)
+SRCS += $(wildcard data/*.cpp)
 OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
@@ -14,12 +15,15 @@ run: main
 	./main 2> run.err.log
 
 main: ${OBJS}
-	${CC} -o main main.o state.o vector.o graphics/graphics.o ${LDLIBS}
+	${CC} -o main main.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
 
 %.o: %.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
 graphics/%.o: graphics/%.cpp ${HEADERS}
+	${CC} -c ${CFLAGS} $< -o $@
+
+data/%.o: data/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
 clean:
