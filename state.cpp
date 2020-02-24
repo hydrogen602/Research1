@@ -20,7 +20,7 @@ void State::addBody(double x, double y, double z, double vx, double vy, double v
   }
 }
 
-int State::size() const {
+unsigned int State::size() const {
   return masses.size();
 }
 
@@ -260,6 +260,10 @@ void State::rk4() {
 
     (*this) += K;
 
+}
+
+double& State::operator[](unsigned int i) {
+    return data[i];
 }
 
 State State::operator+=(Vector delta) {

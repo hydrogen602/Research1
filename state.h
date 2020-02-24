@@ -33,8 +33,6 @@ public:
 
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 
-    int size() const;
-
     void printOut() const;
 
     void derivative(Vector& d) const;
@@ -45,9 +43,13 @@ public:
 
     void rk4();
 
+    double& operator[](unsigned int i);
+
     State operator+=(Vector delta);
 
     double computeEnergy() const;
+
+    unsigned int size() const;
 };
 
 #endif

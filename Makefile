@@ -1,8 +1,9 @@
 CC = g++
 CFLAGS = -Wall -pedantic -Ofast -std=c++11
-LDLIBS = -lm
+LDLIBS = -lm -lncurses
 
 SRCS := $(wildcard *.cpp)
+SRCS += $(wildcard graphics/*.cpp)
 OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
@@ -10,12 +11,15 @@ HEADERS := $(wildcard *.h)
 .PHONY = clean run clean-log trim-log
 
 run: main
-	./main > run.log
+	./main 2> run.err.log
 
 main: ${OBJS}
-	${CC} -o main main.o state.o vector.o ${LDLIBS}
+	${CC} -o main main.o state.o vector.o graphics/graphics.o ${LDLIBS}
 
 %.o: %.cpp ${HEADERS}
+	${CC} -c ${CFLAGS} $< -o $@
+
+graphics/%.o: graphics/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
 clean:
