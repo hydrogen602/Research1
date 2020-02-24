@@ -2,6 +2,7 @@
 #include "state.h"
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 #include "graphics/graphics.h"
 #include <unistd.h>
 
@@ -144,12 +145,48 @@ void testGroup5_Graphics(const int orbits) {
     graphics::end();
 }
 
+void testGroup5_1_PyGraphics(const int orbits) {
+    double h = 1e-2;
+    State sys(h);
+
+    sys.addBody(0, 0, 0, 0, 0, 0, 1, 0.00465479256);
+    sys.addBody(1, 0, 0, 0, 1, 0, 1e-8, 4.25879793e-5);
+
+    std::ofstream pipe;
+    std::cerr << "Opening pipe...\n";
+    pipe.open("graphics.socket");
+
+    std::cerr << "N-body simulation\n";
+    std::cerr << "Number of bodies: " << sys.size() << '\n';
+
+    double factor = 500 / 2.5;
+
+    pipe << "set-scale-factor:" << factor << '\n';
+    
+    for (unsigned int i = 0; i < sys.size() * 6; i += 6) {
+        pipe << "new:[" << i << ',' << sys[i] << ',' << sys[i+1] << ',' << 10 << "]\n";
+    }
+
+    for (double i = 0; i < orbits * PI * 2; i += h) { // orbits * 2 * PI
+
+        sys.kickStep1();
+
+        for (unsigned int i = 0; i < sys.size() * 6; i += 6) {
+            pipe << "mv:[" << i << ',' << sys[i] << ',' << sys[i+1] << ',' << 10 << "]\n";
+        }
+
+        usleep(10000);
+    }
+
+    pipe.close();
+}
+
 void testGroup6_Collision() {
     double h = 1e-2;
     State sys(h);
 
-    sys.addBody(-1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(-1e-1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(1e-1, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
 
     std::cerr << "N-body simulation\n";
     std::cerr << "Number of bodies: " << sys.size() << '\n';
@@ -160,7 +197,7 @@ void testGroup6_Collision() {
         min = s.max_y;
     }
 
-    double factor = min / 2.5;
+    double factor = min / (1e-0 * 2.5);
 
     graphics::setScaleFactor(factor);
 
@@ -171,10 +208,10 @@ void testGroup6_Collision() {
             graphics::drawPoint(sys[i], sys[i + 1], '.');
         }
 
-        sys.kickStep1();
+        sys.rk4();
 
         for (unsigned int i = 0; i < sys.size() * 6; i += 6) {
-            graphics::drawPoint(sys[i], sys[i + 1], 'o');
+            graphics::drawPoint(sys[i], sys[i + 1], 'a' + i/6);
         }
         refresh();
 

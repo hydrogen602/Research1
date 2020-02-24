@@ -27,7 +27,7 @@ Vector& Vector::operator=(const Vector& other) {
     for (unsigned int i = 0; i < other.data.size(); ++i) {
         data[i] = other.data[i];
     }
-    printf("Copy assign\n");
+    //printf("Copy assign\n");
     return *this;
 }
 
