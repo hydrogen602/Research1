@@ -17,11 +17,11 @@ Vector::Vector(const Vector& src) {
     }
 }
 
-Vector::Vector(Vector&& src): data{src.data} {
-    // move should destroy original
+// Vector::Vector(Vector&& src): data{src.data} {
+//     // move should destroy original
 
-    // how to ?
-}
+//     // how to ?
+// }
 
 Vector& Vector::operator=(const Vector& other) {
     data.resize(other.data.size(), 0);

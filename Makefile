@@ -17,6 +17,9 @@ run: main
 main: ${OBJS}
 	${CC} -o main main.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
 
+tests: ${OBJS}
+	${CC} -o tests tests.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
+
 %.o: %.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
