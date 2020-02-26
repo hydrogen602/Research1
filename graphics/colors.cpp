@@ -5,9 +5,11 @@
 #include "graphics.h"
 
 int main() {
-    graphics::init();
+    graphics g;
 
-    graphics::initColor();
+    g.init();
+
+    g.initColor();
 
     printw("Seems that you can use ncurses ...\nPress any key to exit!\n");
 
@@ -20,5 +22,5 @@ int main() {
 
     getch();
 
-    graphics::end();
+    g.end();
 }
