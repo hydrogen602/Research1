@@ -7,7 +7,9 @@
 
 #define square(x) ((x) * (x))
 
-State::State(double hVal): h{hVal} {}
+State::State(double hVal, double maxXArg, double maxYArg): h{hVal}, maxX{maxXArg}, maxY{maxYArg} {
+    std::cerr << "maxX = " << maxX << "; maxY = " << maxY << '\n';
+}
 
 void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz) {
   data.addBody(x, y, z, vx, vy, vz);
@@ -141,10 +143,10 @@ void State::derivative(Vector& d) const {
 
                     accVector += (c * a);
 
-                    fprintf(stderr, "object %d\n", i);
-                    fprintf(stderr, "deltaX = %e\n", deltaX);
-                    fprintf(stderr, "<%e, %e, %e>\n", c.x, c.y, c.z);
-                    fprintf(stderr, "<%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
+                    //fprintf(stderr, "object %d\n", i);
+                    //fprintf(stderr, "deltaX = %e\n", deltaX);
+                    //fprintf(stderr, "<%e, %e, %e>\n", c.x, c.y, c.z);
+                    //fprintf(stderr, "<%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
                 }
             }
         }
@@ -268,8 +270,24 @@ State State::operator+=(Vector delta) {
         throw ERR_VECTOR_SIZE_MISMATCH;
     }
 
-    for (unsigned int i = 0; i < data.size(); ++i) {
+    // boundary conditions!
+
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         data[i] += delta[i];
+        data[i + 1] += delta[i + 1];
+        data[i + 2] += delta[i + 2];
+        data[i + 3] += delta[i + 3];
+        data[i + 4] += delta[i + 4];
+        data[i + 5] += delta[i + 5];
+
+        // if (data[i] < -maxX || data[i] > maxX) {
+        //     data[i] *= -1;
+        //     std::cerr << "flipped\n";
+        // }
+
+        // if (data[i + 1] < -maxY || data[i + 1] > maxY) {
+        //     data[i + 1] *= -1;
+        // }
     }
 
     return *this;

@@ -12,12 +12,22 @@ typedef struct pixelState
 class screenState
 {
 private:
-    pixel ** data; // each points to a row of pixels
+    pixel * data;
     unsigned int height;
     unsigned int width;
+    double scaleFactor;
 public:
     screenState(unsigned int h, unsigned int w);
+    screenState(const screenState &src);
+    //screenState(screenState &&src);
     ~screenState();
+
+    //void init(unsigned int h, unsigned int w);
+
+    void setScaleFactor(double d);
+    double getScaleFactor();
+
+    void shiftPixelsLeft(unsigned int shift);
 
     void setPixel(unsigned int row, unsigned int col, pixel p);
     pixel getPixel(unsigned int row, unsigned int col) const;

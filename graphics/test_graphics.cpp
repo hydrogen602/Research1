@@ -11,9 +11,9 @@ void test1() {
 
     g.init();
 
-    g.setScaleFactor(1);
+    g.setScaleFactor(1, 0);
 
-    g.drawPoint(0, 0, 'X');
+    g.drawPoint(0, 0, 'X', 0);
 
     getch();
 

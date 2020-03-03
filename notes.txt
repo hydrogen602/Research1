@@ -25,4 +25,14 @@ add color
 bunch of particles with bouncing
 dissipation
 
+Results
+forgot to set some vars again - got trash
+
+March 2
+calc overlap / (r1 + r2) 
+lewis wants less than 10%
+k value
+diff sizes
+dissipation
+
 

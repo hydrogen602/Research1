@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -pedantic -Ofast -std=c++11
+CFLAGS = -Wall -pedantic -std=c++11 -Ofast
 LDLIBS = -lm -lncurses
 
 SRCS := $(wildcard *.cpp)
@@ -15,7 +15,7 @@ run: main
 	./main 2> run.err.log
 
 main: ${OBJS}
-	${CC} -o main main.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
+	${CC} -o main main.o state.o vector.o graphics/graphics.o data/vector3.o graphics/screenState.o ${LDLIBS}
 
 tests: ${OBJS}
 	${CC} -o tests tests.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
@@ -30,7 +30,7 @@ data/%.o: data/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
 clean:
-	rm -f *.o main
+	rm -f *.o graphics/*.o data/*.o main
 
 clean-log:
 	rm -f *.log

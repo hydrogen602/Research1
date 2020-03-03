@@ -8,7 +8,7 @@
 
 #define DEBUG 0
 
-const double k = 1e10;
+const double k = 1e10 * 10;
 
 // deprecated
 // 
@@ -26,12 +26,15 @@ private:
     std::vector<double> sizes;
     const double h;
 
+    const double maxX;
+    const double maxY;
+
     double computePotentialEnergy() const;
 
     double computeKineticEnergy() const;
 
 public:    
-    State(double hVal);
+    State(double hVal, double maxXArg, double maxYArg);
 
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 
