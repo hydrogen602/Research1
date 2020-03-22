@@ -8,7 +8,7 @@
 
 const double PI = 3.141592653589793;
 
-const int orbits = 100;
+const int orbits = 1;//00;
 
 State::State(double hVal): h{hVal} {}
 
