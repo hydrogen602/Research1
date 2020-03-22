@@ -11,20 +11,28 @@ Vector::Vector(int n) {
 
 Vector::Vector(const Vector& src) {
     data.resize(src.data.size(), 0);
-    for (int i = 0; i < src.data.size(); ++i) {
+    for (unsigned int i = 0; i < src.data.size(); ++i) {
         data[i] = src.data[i];
     }
 }
 
+Vector::Vector(Vector&& src): data{src.data} {
+    // move should destroy original
+
+    // how to ?
+}
+
 Vector& Vector::operator=(const Vector& other) {
     data.resize(other.data.size(), 0);
-    for (int i = 0; i < other.data.size(); ++i) {
+    for (unsigned int i = 0; i < other.data.size(); ++i) {
         data[i] = other.data[i];
     }
+    //printf("Copy assign\n");
+    return *this;
 }
 
 Vector& Vector::operator*=(double h) {
-    for (int i = 0; i < data.size(); ++i) {
+    for (unsigned int i = 0; i < data.size(); ++i) {
         data[i] *= h;
     }
     return *this;
@@ -34,21 +42,21 @@ Vector& Vector::operator+=(const Vector& other) {
     if (data.size() != other.data.size()) {
         throw ERR_VECTOR_SIZE_MISMATCH;
     }
-    for (int i = 0; i < data.size(); ++i) {
+    for (unsigned int i = 0; i < data.size(); ++i) {
         data[i] += other.data[i];
     }
     return *this;
 }
 
-double& Vector::operator[](int i) {
-    if (i < 0 || i >= data.size()) {
+double& Vector::operator[](unsigned int i) {
+    if (i >= data.size()) {
         throw ERR_VECTOR_OUT_OF_BOUNDS;
     }
     return data[i];
 }
 
-const double& Vector::operator[](int i) const {
-    if (i < 0 || i >= data.size()) {
+const double& Vector::operator[](unsigned int i) const {
+    if (i >= data.size()) {
         throw ERR_VECTOR_OUT_OF_BOUNDS;
     }
     return data[i];
@@ -56,7 +64,7 @@ const double& Vector::operator[](int i) const {
 
 Vector Vector::operator/(double m) const {
     Vector v(*this);
-    for (int i = 0; i < data.size(); ++i) {
+    for (unsigned int i = 0; i < data.size(); ++i) {
         v[i] = data[i] / m;
     }
     return v;
@@ -75,17 +83,17 @@ void Vector::addBody(double x, double y, double z, double vx, double vy, double 
     data.push_back(vz);
 }
 
-int Vector::size() const {
+unsigned int Vector::size() const {
     return data.size();
 }
 
-void Vector::printOut(int i) const {
+void Vector::printOut(unsigned int i) const {
     printf("  <%e, %e, %e, %e, %e, %e>\n", data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5]);
 }
 
 void Vector::printOut() const {
     printf("[\n");
-    for (int i = 0; i < data.size(); i += 6) {
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         printf("  <%e, %e, %e, %e, %e, %e>\n", data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5]);
     }
     printf("]\n");

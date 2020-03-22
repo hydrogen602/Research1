@@ -1,25 +1,35 @@
 CC = g++
-CFLAGS = -Wall -pedantic -g -std=c++11
-LDLIBS = -lm
+
+CFLAGS = -Wall -pedantic -Ofast -std=c++11
+LDLIBS = -lm -lncurses
 
 SRCS := $(wildcard *.cpp)
+SRCS += $(wildcard graphics/*.cpp)
 OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
 
-.PHONY = clean run
+.PHONY = clean run clean-log trim-log
 
 run: main
-	./main > run.log
+	./main 2> run.err.log
 
 main: ${OBJS}
-	${CC} -o main state.o vector.o ${LDLIBS}
+	${CC} -o main main.o state.o vector.o graphics/graphics.o ${LDLIBS}
 
-mainOld: ${OBJS}
-	${CC} -o main main.o body.o kDeltaVector.o ${LDLIBS}
+%.o: %.cpp ${HEADERS}
+	${CC} -c ${CFLAGS} $< -o $@
 
-%.o: %.c ${HEADERS}
+graphics/%.o: graphics/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
 clean:
 	rm -f *.o main
+
+clean-log:
+	rm -f *.log
+
+trim-log:
+	rm runTrimmed.log
+	awk "NR % 10 == 0 {print}" run.log > runTrimmed.log
+	@echo runTrimmed.log has $(wc -l runTrimmed.log) lines

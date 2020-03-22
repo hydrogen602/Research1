@@ -8,6 +8,8 @@
 
 #define DEBUG 0
 
+const double k = 1;
+
 typedef struct vector3 {
     double x;
     double y;
@@ -19,6 +21,7 @@ class State
 private:
     Vector data;
     std::vector<double> masses; // in solar masses
+    std::vector<double> sizes;
     const double h;
 
     double computePotentialEnergy() const;
@@ -28,9 +31,7 @@ private:
 public:    
     State(double hVal);
 
-    void addBody(double x, double y, double z, double vx, double vy, double vz, double m);
-
-    int size() const;
+    void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 
     void printOut() const;
 
@@ -42,9 +43,13 @@ public:
 
     void rk4();
 
+    double& operator[](unsigned int i);
+
     State operator+=(Vector delta);
 
     double computeEnergy() const;
+
+    unsigned int size() const;
 };
 
 #endif

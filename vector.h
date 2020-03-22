@@ -2,6 +2,7 @@
 #define VECTOR_H_
 
 #include <vector>
+#include "header.h"
 
 class Vector
 {
@@ -10,22 +11,23 @@ private:
 public:
     Vector();
     Vector(int i);
-    Vector(const Vector& src);
+    Vector(const Vector& src); // copy
+    Vector(Vector&& src); // move
 
     Vector& operator*=(double h);
     Vector& operator+=(const Vector& other);
-    double& operator[](int i);
-    const double& operator[](int i) const;
+    double& operator[](unsigned int i);
+    const double& operator[](unsigned int i) const;
     Vector& operator=(const Vector& other);
     Vector operator/(double h) const;
 
     void addBody(double x, double y, double z, double vx, double vy, double vz);
 
-    int size() const;
+    unsigned int size() const;
 
     void resize(int n, double d);
 
-    void printOut(int i) const;
+    void printOut(unsigned int i) const;
 
     void printOut() const;
 };
