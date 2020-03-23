@@ -29,14 +29,14 @@ void collision() {
     double h = 1e-7;
     State sys(h, s.max_x/2.0 / (factor * 3.0 * 5.0/6.0), s.max_y/2.0 / (factor));
 
-    sys.addBody(-30e-5, 0, 0, 0, 5, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(-30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
     sys.addBody(30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(0, 35e-5, 0, 5, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(0, -35e-5, 0, -5, 0, 0, 1e-2, 4.25879793e-5);
+    //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
+    //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
 
-    sys.addBody(-30e-5, 35e-5, 0, 0, 5, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(30e-5, -35e-5, 0, 2, 2, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(30e-5, 35e-5, 0, 5, 0, 0, 1e-2, 4.25879793e-5);
+    //sys.addBody(-30e-5, 35e-5, 0, 0, 5, 0, 1e-2, 4.25879793e-5);
+    //sys.addBody(30e-5, -35e-5, 0, 2, 2, 0, 1e-2, 4.25879793e-5);
+    //sys.addBody(30e-5, 35e-5, 0, 5, 0, 0, 1e-2, 4.25879793e-5);
     //sys.addBody(-30e-5, -35e-5, 0, -5, 0, 0, 1e-2, 4.25879793e-5);
 
     //sys.addBody(0, 0, 0, 0, 0, 0, 1, 0.00465479256);
@@ -129,7 +129,7 @@ void collision() {
     g.end();
 }
 
-int main() {
+int main(int argc, char * argv[]) {
     collision();
     return 0;
 }

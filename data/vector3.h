@@ -20,6 +20,8 @@ public:
     vector3 operator*(const double d) const;
     vector3& operator*=(const double d);
 
+    double dot(const vector3& d) const;
+
     vector3 operator/(const double d) const;
     vector3& operator/=(const double d);
 };

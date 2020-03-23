@@ -37,6 +37,10 @@ vector3& vector3::operator*=(const double d) {
     return *(this);
 }
 
+double vector3::dot(const vector3& d) const {
+    return x * d.x + y * d.y + z * d.z;
+}
+
 vector3 vector3::operator/(const double d) const {
     return vector3(x / d, y / d, z / d);
 }
