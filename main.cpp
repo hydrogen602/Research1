@@ -28,7 +28,7 @@ void collision() {
     std::cerr << "Survived setting scale factor" << std::endl;
 
     double h = 1e-7;
-    State sys(h, s.max_x/2.0 / (factor * 3.0 * 5.0/6.0), s.max_y/2.0 / (factor), kDefault);
+    State sys(h, s.max_x/2.0 / (factor * 3.0 * 5.0/6.0), s.max_y/2.0 / (factor), kDefault, 1e3);
 
     sys.addBody(-30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
     sys.addBody(30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
@@ -131,13 +131,13 @@ void collision() {
 }
 
 
-void collisionNoGraphics(double k) {
+void collisionNoGraphics(double k, double drag) {
 
     const double h = 1e-7;
-    State sys(h, 0, 0, k);
+    State sys(h, 0, 0, k, drag);
 
-    sys.addBody(-30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+    sys.addBody(-30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
+    sys.addBody(30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
     //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
     //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
 
@@ -166,6 +166,8 @@ void collisionNoGraphics(double k) {
     vector3 v1 = sys.getVelocity(0);
     vector3 v2 = sys.getVelocity(1);
 
+    double lastVel = 1;
+
     int runCounter = 0;
     for (double i = 0; i < /*10 * PI * 2 */ 1.0e-2; i += h) {
         runCounter++;
@@ -181,8 +183,16 @@ void collisionNoGraphics(double k) {
         double d = sqrt(diff.dot(diff));
 
         double deltaX = d - (s0 + s1);
+
+        
+
         if (deltaX < 0) {
-            // intersection 
+            // intersection
+            if (!approaching) {
+                std::cout << "flipped: " << i << ", " << lastVel << ", " << deltaX << std::endl;
+                approaching = true;
+            }
+
             //std::cout << "dx = " << deltaX << '\n';
             if (deltaX < lastIntersection) {
                 lastIntersection = deltaX;
@@ -193,16 +203,29 @@ void collisionNoGraphics(double k) {
             }
         }
         else {
+            if (deapproaching) {
+                vector3 v = sys.getVelocity(0);
+                double vel = sqrt(v.dot(v));
+
+                std::cout << "flipped: " << i << ", " << vel << ", " << deltaX << std::endl;
+
+                i = 1e100;
+            }
             deapproaching = false;
             lastIntersection = 0;
         }
+
+        vector3 v = sys.getVelocity(0);
+        lastVel = sqrt(v.dot(v));
 
         if (v1.dot(v1Next) < 0) {
             if (v2.dot(v2Next) < 0) {
                 // flip
                 totalE = sys.computeEnergy();
+                vector3 v = sys.getVelocity(0);
+                double vel = sqrt(v.dot(v));
 
-                std::cout << "flipped: " << i << ", " << totalE << ", " << deltaX << std::endl;
+                //std::cout << "flipped: " << i << ", " << vel << ", " << deltaX << std::endl;
                 
                 //std::cerr << "flipped\n";
             }
@@ -222,13 +245,20 @@ void collisionNoGraphics(double k) {
 }
 
 int main() {
-    float k = kDefault;
+    double k = kDefault;
+    double drag = 1e3;
+
     std::cin >> k;
+    std::cin >> drag;
     if (k == 0) {
         std::cerr << "Got a non floaty point\n";
         return 1;
     }
+    // if (drag == 0) {
+    //     std::cerr << "Got a non floaty point\n";
+    //     return 1;
+    // }
 
-    collisionNoGraphics(k);
+    collisionNoGraphics(k, drag);
     return 0;
 }

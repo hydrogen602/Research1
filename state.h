@@ -30,13 +30,14 @@ private:
     const double maxY;
 
     const double k;
+    const double drag;
 
     double computePotentialEnergy() const;
 
     double computeKineticEnergy() const;
 
 public:
-    State(double hVal, double maxXArg, double maxYArg, double kArg);
+    State(double hVal, double maxXArg, double maxYArg, double kArg, double dragCoeff);
 
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 

@@ -2,18 +2,18 @@
 import subprocess
 import sys
 
-def run(k: int):
-    print("Running with a k of " + str(k))
-    s = subprocess.run(['./main'], input=str(k).encode(), capture_output=True)
+def run(k: float, drag: float):
+    print("Running with a k of " + str(k), file=sys.stderr)
+    s = subprocess.run(['./main'], input=f"{str(k)}\n{str(drag)}".encode(), capture_output=True)
     raw = s.stdout.decode()
     info = s.stderr.decode()
-    print("stderr log:")
-    print('\t' + info.replace('\n', "\n\t"))
+    print("stderr log:", file=sys.stderr)
+    print('\t' + info.replace('\n', "\n\t"), file=sys.stderr)
     s.check_returncode()
 
     # data parsing
     data = [line.split(':', maxsplit=1) for line in raw.split('\n') if ':' in line]
-    print(f"data line count = {len(data)}")
+    print(f"data line count = {len(data)}", file=sys.stderr)
 
     initE = None
     flips = []
@@ -42,15 +42,17 @@ def run(k: int):
     return initE, flips, intersections
 
 if __name__ == '__main__':
-    k = 1e+11
-    if len(sys.argv) == 2:
+    k = 1e11
+    drag = 1e3
+    if len(sys.argv) == 3:
         k = float(sys.argv[1])
+        drag = float(sys.argv[2])
 
-    initE, flips, inter = run(k)
+    initE, flips, inter = run(k, drag)
 
-    print(f"Initial Energy = {initE}")
+    print(f"Initial Energy = {initE}", file=sys.stderr)
 
-    outerFlipsE = [flip['energy'] for flip in flips if flip['deltaX'] > 0]
+    outerFlipsE = [flip['energy'] for flip in flips]
     maxIntersections = [i['percent'] for i in inter]
 
     #print("Flips: ")
@@ -60,8 +62,8 @@ if __name__ == '__main__':
         coeff = after / before
         print(f"Coefficient = {coeff}")
 
-    print()
-    print("Intersections:")
-    print(maxIntersections)
+    print('', file=sys.stderr)
+    print("Intersections:", file=sys.stderr)
+    print('Percent Overlap =', maxIntersections[0])
 
         

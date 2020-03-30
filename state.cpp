@@ -7,7 +7,7 @@
 
 #define square(x) ((x) * (x))
 
-State::State(double hVal, double maxXArg, double maxYArg, double kArg): h{hVal}, maxX{maxXArg}, maxY{maxYArg}, k{kArg} {
+State::State(double hVal, double maxXArg, double maxYArg, double kArg, double dragCoeff): h{hVal}, maxX{maxXArg}, maxY{maxYArg}, k{kArg}, drag{dragCoeff} {
     std::cout << "k = " << k << "\n";
     std::cerr << "maxX = " << maxX << "; maxY = " << maxY << '\n';
 
@@ -156,8 +156,6 @@ void State::derivative(Vector& d) const {
 
                     //std::cerr << "intersection " << fabs(deltaX / (sizes[j / 6] + sizes[i / 6])) * 100 << "%\n";
 
-                    double dissipative = 1e3;
-
                     vector3 vI = {data[i+3], data[i+4], data[i+5]};
                     vector3 vJ = {data[j+3], data[j+4], data[j+5]};
 
@@ -166,7 +164,7 @@ void State::derivative(Vector& d) const {
                     double vMag = rel.dot(c);
 
                     // in dir -c (away from other object)
-                    double a = (-k * -deltaX + dissipative * vMag) / masses[i / 6];
+                    double a = (-k * -deltaX + drag * vMag) / masses[i / 6];
                     
 
                     accVector += (c * a);
