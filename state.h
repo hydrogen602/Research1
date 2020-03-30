@@ -8,7 +8,7 @@
 
 #define DEBUG 0
 
-const double k = 1e10 * 10;
+const double kDefault = 1e10 * 10;
 
 // deprecated
 // 
@@ -29,12 +29,14 @@ private:
     const double maxX;
     const double maxY;
 
+    const double k;
+
     double computePotentialEnergy() const;
 
     double computeKineticEnergy() const;
 
-public:    
-    State(double hVal, double maxXArg, double maxYArg);
+public:
+    State(double hVal, double maxXArg, double maxYArg, double kArg);
 
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 
@@ -47,6 +49,12 @@ public:
     void kickStep1();
 
     void rk4();
+
+    vector3 getPosition(int objNum) const;
+
+    vector3 getVelocity(int objNum) const;
+
+    double getSize(int objNum) const;
 
     double& operator[](unsigned int i);
 

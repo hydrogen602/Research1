@@ -7,8 +7,10 @@
 
 #define square(x) ((x) * (x))
 
-State::State(double hVal, double maxXArg, double maxYArg): h{hVal}, maxX{maxXArg}, maxY{maxYArg} {
+State::State(double hVal, double maxXArg, double maxYArg, double kArg): h{hVal}, maxX{maxXArg}, maxY{maxYArg}, k{kArg} {
+    std::cout << "k = " << k << "\n";
     std::cerr << "maxX = " << maxX << "; maxY = " << maxY << '\n';
+
 }
 
 void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz) {
@@ -79,6 +81,22 @@ double State::computeEnergy() const {
     return computeKineticEnergy() + computePotentialEnergy();
 }
 
+vector3 State::getPosition(int objNum) const {
+    int i = objNum * 6;
+    vector3 p = {data[i+0], data[i+1], data[i+2]};
+    return p;
+}
+
+vector3 State::getVelocity(int objNum) const {
+    int i = objNum * 6;
+    vector3 v = {data[i+3], data[i+4], data[i+5]};
+    return v;
+}
+
+double State::getSize(int objNum) const {
+    return sizes[objNum];
+}
+
 void State::derivative(Vector& d) const {
     if (d.size() != data.size()) {
         d.resize(data.size(), 0);
@@ -136,7 +154,7 @@ void State::derivative(Vector& d) const {
                 if (deltaX < 0) {
                     // intersection!
 
-                    std::cerr << "intersection " << fabs(deltaX / (sizes[j / 6] + sizes[i / 6])) * 100 << "%\n";
+                    //std::cerr << "intersection " << fabs(deltaX / (sizes[j / 6] + sizes[i / 6])) * 100 << "%\n";
 
                     double dissipative = 1e3;
 
