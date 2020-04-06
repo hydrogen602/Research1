@@ -45,3 +45,4 @@ particle sizes of
 k and drag that work with 1e-7 to 1e-9
 coeff of rest ~ .5
 percent overlap < 5%
+
