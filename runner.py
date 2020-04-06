@@ -93,6 +93,11 @@ if __name__ == '__main__':
     kVals = [pow(10, i) for i in range(5,14)]
     dragVals = [pow(10, i) for i in range(1, 6)]
 
+    # 1e9-11
+    kVals += [3e9, 7e9, 3e10, 7e10, 3e11, 7e11]
+    # drag 133-4
+    dragVals += [3e3, 5e3, 8e3, 3e4, 5e4, 8e4]
+
     print(kVals)
 
     with open('dataOverlap.csv', 'w') as f_over:
@@ -110,6 +115,8 @@ if __name__ == '__main__':
                     percentOverlap, coeff = run2(k, drag)
                     if (isinstance(percentOverlap, float) and percentOverlap < 5 and coeff > 0.4 and coeff < 0.6):
                         print('='*30)
+                        print(f'k = {k}, drag = {drag}')
+                        
                         print(f"Coefficient = {coeff}")
                         print('Percent Overlap =', percentOverlap)
 

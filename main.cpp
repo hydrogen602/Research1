@@ -137,8 +137,8 @@ void collisionNoGraphics(double k, double drag) {
     std::cerr << "> k = " << k << ", drag = " << drag << '\n';
     State sys(h, 0, 0, k, drag);
 
-    sys.addBody(-30e-4, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-4);
-    sys.addBody(30e-4, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-4);
+    sys.addBody(-30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
+    sys.addBody(30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
     //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
     //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
 
