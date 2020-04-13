@@ -23,6 +23,12 @@ tests: ${OBJS}
 %.o: %.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
+program.o: program.c
+	gcc -c program.c -o program.o
+
+program: program.o
+	gcc -o program program.o -lm
+
 graphics/%.o: graphics/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 

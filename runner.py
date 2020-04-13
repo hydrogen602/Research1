@@ -90,13 +90,17 @@ if __name__ == '__main__':
         print(err)
 
 
-    kVals = [pow(10, i) for i in range(5,14)]
-    dragVals = [pow(10, i) for i in range(1, 6)]
+    # kVals = [pow(10, i) for i in range(5,14)]
+    # dragVals = [pow(10, i) for i in range(1, 6)]
 
     # 1e9-11
-    kVals += [3e9, 7e9, 3e10, 7e10, 3e11, 7e11]
+    # kVals += [3e9, 7e9, 3e10, 7e10, 3e11, 7e11]
     # drag 133-4
-    dragVals += [3e3, 5e3, 8e3, 3e4, 5e4, 8e4]
+    # dragVals += [3e3, 5e3, 8e3, 3e4, 5e4, 8e4]
+
+    kVals = [pow(10, i) for i in range(-5, 10)]
+
+    dragVals = [0]
 
     print(kVals)
 

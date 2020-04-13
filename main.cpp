@@ -6,7 +6,7 @@
 #include "graphics/graphics.h"
 #include <ncurses.h>
 
-void collision() {
+void collision(double k, double drag) {
     graphics g;
 
     graphics::screen_size s = g.init();
@@ -21,17 +21,41 @@ void collision() {
 
     std::cerr << "Survived new screen" << std::endl;
 
-    double factor = min / (1e-4 * 15); // 45
+    double factor = min / (1e-7 * 3); // 45
 
     g.setScaleFactor(factor, 0);
 
     std::cerr << "Survived setting scale factor" << std::endl;
 
-    double h = 1e-7;
-    State sys(h, s.max_x/2.0 / (factor * 3.0 * 5.0/6.0), s.max_y/2.0 / (factor), kDefault, 1e3);
 
-    sys.addBody(-30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
-    sys.addBody(30e-5, 0, 0, 0, 0, 0, 1e-2, 4.25879793e-5);
+
+    const double h = 1e-6;
+    std::cerr << "> k = " << k << ", drag = " << drag << '\n';
+    State sys(h, 0, 0, k, drag);
+
+    double r = 1e-7; // 130000 km
+
+    // 2g/cm^3
+
+    // saturns mass = 5.683e26 kg
+    //              = 5.683e29 g
+    //
+    // radius       = 1.3e5 km
+    //              = 1.3e8 m
+    //              = 1.3e10 cm
+    //
+    //                          (1.3e10)^3
+    // so conversion factor = --------------
+    //                           5.683e29
+
+    double rho = 7.7; //129000; sat mass/ ring radius^3
+    double mass = 4/3.0 * 3.14159 * r * r * r * rho;
+
+    sys.addBody(-2 * r, 0, 0, 2e-6, 0, 0, mass, r);
+    sys.addBody(2 * r, 0, 0, -2e-6, 0, 0, mass, r);
+
+
+
     //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
     //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
 
@@ -104,14 +128,17 @@ void collision() {
         g.setColor(WHITE_ON_BLACK);
         
         mvprintw(0, 0, "Energy = %e", totalE);
-        mvprintw(1, 0, "Screens = %d", g.countScreens());
-        mvprintw(2, 0, "Current Screen = %d", g.getCurrentScreen());
+        mvprintw(1, 0, "Time = %e", i);
+        //mvprintw(1, 0, "Screens = %d", g.countScreens());
+        //mvprintw(2, 0, "Current Screen = %d", g.getCurrentScreen());
+        vector3 v0 = sys.getVelocity(0);
+        mvprintw(3, 0, "v 1 = <%e, %e, %e>", v0.x, v0.y, v0.z);
 
         mvprintw(s.max_y - 1, 0, "Press any key to close");
 
         g.refreshDisplay();
 
-        int c = g.sleepInterruptible(5); // returns 0 on no char typed
+        int c = g.sleepInterruptible(1); // returns 0 on no char typed
 
         if (c == 'd') {
             g.setScreenRelNoThrow(1);
@@ -137,8 +164,27 @@ void collisionNoGraphics(double k, double drag) {
     std::cerr << "> k = " << k << ", drag = " << drag << '\n';
     State sys(h, 0, 0, k, drag);
 
-    sys.addBody(-30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
-    sys.addBody(30e-7, 0, 0, 0, 0, 0, 1e-8, 4.25879793e-7);
+    double r = 1e-7; // 130000 km
+
+    // 2g/cm^3
+
+    // saturns mass = 5.683e26 kg
+    //              = 5.683e29 g
+    //
+    // radius       = 1.3e5 km
+    //              = 1.3e8 m
+    //              = 1.3e10 cm
+    //
+    //                          (1.3e10)^3
+    // so conversion factor = --------------
+    //                           5.683e29
+
+    double rho = 7.7; //129000; sat mass/ ring radius^3
+    double mass = 4/3.0 * 3.14159 * r * r * r * rho;
+
+    sys.addBody(-2 * r, 0, 0, 2e-5, 0, 0, mass, r);
+    sys.addBody(2 * r, 0, 0, -2e-5, 0, 0, mass, r);
+
     //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
     //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
 
@@ -163,6 +209,15 @@ void collisionNoGraphics(double k, double drag) {
     bool approaching = false;
     bool deapproaching = false;
 
+    vector3 diff = sys.getPosition(0) - sys.getPosition(1);
+    double d = sqrt(diff.dot(diff));
+
+    double minDis = d - (s0 + s1);
+
+    bool successfullBounce = false;
+
+    int bounceCounter = 0;
+
 
     vector3 v1 = sys.getVelocity(0);
     vector3 v2 = sys.getVelocity(1);
@@ -185,11 +240,15 @@ void collisionNoGraphics(double k, double drag) {
 
         double deltaX = d - (s0 + s1);
 
-        
+        if (deltaX < minDis) {
+            minDis = deltaX;
+        }
 
         if (deltaX < 0) {
             // intersection
+            ++bounceCounter;
             if (!approaching) {
+                // more like start of collision
                 std::cout << "flipped: " << i << ", " << lastVel << ", " << deltaX << std::endl;
                 approaching = true;
             }
@@ -208,7 +267,10 @@ void collisionNoGraphics(double k, double drag) {
                 vector3 v = sys.getVelocity(0);
                 double vel = sqrt(v.dot(v));
 
+                // end of collision
                 std::cout << "flipped: " << i << ", " << vel << ", " << deltaX << std::endl;
+                successfullBounce = true;
+                approaching = false; // should work
 
                 i = 1e100;
             }
@@ -242,7 +304,15 @@ void collisionNoGraphics(double k, double drag) {
         v1 = v1Next;
     }
     std::cerr << "Survived run\n";
-    std::cerr << "Runs: " << runCounter << '\n';
+    std::cerr << "> Runs: " << runCounter << '\n';
+
+    if (!successfullBounce) {
+        if (approaching) {
+            std::cerr << "> Was approaching\n";
+        }
+        std::cerr << "> min deltaX = " << minDis << "\n";
+        std::cerr << "> bounce counter = " << bounceCounter << '\n';
+    }
 }
 
 int main() {
