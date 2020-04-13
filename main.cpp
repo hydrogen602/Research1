@@ -160,13 +160,13 @@ void collision(double k, double drag) {
 
 void collisionNoGraphics(double k, double drag) {
 
-    const double h = 1e-7;
+    const double h = 1e-5;
     std::cerr << "> k = " << k << ", drag = " << drag << '\n';
     State sys(h, 0, 0, k, drag);
 
-    double r = 1e-7; // 130000 km
+    double r = 5e-8; // 130000 km
 
-    // 2g/cm^3
+    // 0.5g/cm^3
 
     // saturns mass = 5.683e26 kg
     //              = 5.683e29 g
@@ -179,11 +179,11 @@ void collisionNoGraphics(double k, double drag) {
     // so conversion factor = --------------
     //                           5.683e29
 
-    double rho = 7.7; //129000; sat mass/ ring radius^3
+    double rho = 1.925;//7.7;//1.925; //129000; sat mass/ ring radius^3
     double mass = 4/3.0 * 3.14159 * r * r * r * rho;
 
-    sys.addBody(-2 * r, 0, 0, 2e-5, 0, 0, mass, r);
-    sys.addBody(2 * r, 0, 0, -2e-5, 0, 0, mass, r);
+    sys.addBody(-2 * r, 0, 0, 2e-8, 0, 0, mass, r);
+    sys.addBody(2 * r, 0, 0, -2e-8, 0, 0, mass, r);
 
     //sys.addBody(0, 35e-4, 0, 5, 0, 0, 1e-2, 4.25879793e-4);
     //sys.addBody(0, -35e-4, 0, -5, 0, 0, 1e-2, 4.25879793e-4);
@@ -225,7 +225,7 @@ void collisionNoGraphics(double k, double drag) {
     double lastVel = 1;
 
     int runCounter = 0;
-    for (double i = 0; i < /*10 * PI * 2 */ 1.0e-2; i += h) {
+    for (double i = 0; i < /*10 * PI * 2 */ 2.0; i += h) {
         runCounter++;
 
         sys.kickStep1();
@@ -311,8 +311,9 @@ void collisionNoGraphics(double k, double drag) {
             std::cerr << "> Was approaching\n";
         }
         std::cerr << "> min deltaX = " << minDis << "\n";
-        std::cerr << "> bounce counter = " << bounceCounter << '\n';
     }
+
+    std::cerr << "> bounce counter = " << bounceCounter << '\n';
 }
 
 int main() {

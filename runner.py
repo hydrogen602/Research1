@@ -16,7 +16,7 @@ def run(k: float, drag: float):
     
     passOnVal = [l for l in info.split('\n') if l.startswith('>')]
     for line in passOnVal:
-        print(line, file=sys.stderr)
+        print(line) # , file=sys.stderr
 
 
     # data parsing
@@ -63,7 +63,7 @@ def run2(k, drag):
     maxIntersections = [i['percent'] for i in inter]
 
     if len(maxIntersections) == 0:
-        print('No bounce', file=sys.stderr)
+        print('No bounce') # , file=sys.stderr
         return '', ''
 
     # print("Flips: ")
@@ -98,9 +98,9 @@ if __name__ == '__main__':
     # drag 133-4
     # dragVals += [3e3, 5e3, 8e3, 3e4, 5e4, 8e4]
 
-    kVals = [pow(10, i) for i in range(-5, 10)]
+    kVals = [pow(10, i) for i in range(-17, -12)]
 
-    dragVals = [0]
+    dragVals = [pow(10, i) for i in range(-20,-10)]
 
     print(kVals)
 
@@ -111,18 +111,29 @@ if __name__ == '__main__':
     
             writerO.writerow(['d'] + dragVals)
             writerC.writerow(['d'] + dragVals)
+
+            counter = 0
             for k in kVals:
+                print(f'\r{counter / len(kVals) * 100}% done', file=sys.stderr, flush=True, end='')
+                counter += 1
+
                 pLs = []
                 coeffLs = []
 
                 for drag in dragVals:
                     percentOverlap, coeff = run2(k, drag)
-                    if (isinstance(percentOverlap, float) and percentOverlap < 5 and coeff > 0.4 and coeff < 0.6):
-                        print('='*30)
-                        print(f'k = {k}, drag = {drag}')
+                    if isinstance(coeff, float) and coeff > 0.4 and coeff < 0.6:
+                        print('>>>>>', end='')
+                    print(f"Coefficient = {coeff}")
+
+                    if isinstance(percentOverlap, float) and percentOverlap < 5:
+                        print('>>>>>', end='')
+                    print('Percent Overlap =', percentOverlap)
+                    #if (isinstance(percentOverlap, float) and percentOverlap < 5 and coeff > 0.4 and coeff < 0.6):
+                    #    print('='*30)
+                    #    #print(f'k = {k}, drag = {drag}')
                         
-                        print(f"Coefficient = {coeff}")
-                        print('Percent Overlap =', percentOverlap)
+                        
 
                     pLs.append(percentOverlap)
                     coeffLs.append(coeff)
