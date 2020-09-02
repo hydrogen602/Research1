@@ -3,6 +3,8 @@ import subprocess
 import sys
 import csv
 
+silence = False
+
 def run(k: float, drag: float):
     #print("Running with a k of " + str(k), file=sys.stderr)
     s = subprocess.run(['./main'], input=f"{str(k)}\n{str(drag)}".encode(), capture_output=True)
@@ -16,7 +18,7 @@ def run(k: float, drag: float):
     
     passOnVal = [l for l in info.split('\n') if l.startswith('>')]
     for line in passOnVal:
-        print(line) # , file=sys.stderr
+        if not silence: print(line) # , file=sys.stderr
 
 
     # data parsing
@@ -63,7 +65,7 @@ def run2(k, drag):
     maxIntersections = [i['percent'] for i in inter]
 
     if len(maxIntersections) == 0:
-        print('No bounce') # , file=sys.stderr
+        if not silence: print('No bounce') # , file=sys.stderr
         return '', ''
 
     # print("Flips: ")
@@ -98,9 +100,15 @@ if __name__ == '__main__':
     # drag 133-4
     # dragVals += [3e3, 5e3, 8e3, 3e4, 5e4, 8e4]
 
-    kVals = [pow(10, i) for i in range(-17, -12)]
+    
+    kVals = [pow(10, i) for i in range(-20, -15)]
+    #kVals = [n * 1e-17 for n in range(1, 10, 1)] + [n * 1e-18 for n in range(1, 10, 1)]
+    #kVals = [n * 1e-17 for n in range(7, 10, 1)] + [n * 1e-18 for n in range(1, 4, 1)]
 
-    dragVals = [pow(10, i) for i in range(-20,-10)]
+    #dragVals = [pow(10, i) for i in range(-25,-15)]
+    #dragVals = [n * 1e-19 for n in range(1, 10, 1)] + [n * 1e-20 for n in range(1, 10, 1)] + [n * 1e-21 for n in range(1, 10, 1)]
+    dragVals = [0] #n * 1e-19 for n in range(9, 10, 1)] + [n * 1e-20 for n in range(1, 5, 1)]
+
 
     print(kVals)
 
@@ -120,15 +128,24 @@ if __name__ == '__main__':
                 pLs = []
                 coeffLs = []
 
-                for drag in dragVals:
-                    percentOverlap, coeff = run2(k, drag)
-                    if isinstance(coeff, float) and coeff > 0.4 and coeff < 0.6:
-                        print('>>>>>', end='')
-                    print(f"Coefficient = {coeff}")
+                
 
-                    if isinstance(percentOverlap, float) and percentOverlap < 5:
-                        print('>>>>>', end='')
-                    print('Percent Overlap =', percentOverlap)
+                for drag in dragVals:
+                    #if silence:
+                    #    print(f'k={k:.0e},drag={drag:.0e}')
+
+                    percentOverlap, coeff = run2(k, drag)
+                    if isinstance(coeff, float):# and coeff > 0.4 and coeff < 0.6:
+                        print(f'k={k:.0e},drag={drag:.0e}>>>>>Coefficient = {coeff}')
+                        #print(f">>>>>Coefficient = {coeff}")
+                    elif not silence:
+                        print(f"Coefficient = {coeff}")
+
+                    if isinstance(percentOverlap, float) and percentOverlap < 10 and percentOverlap > 0.0001:
+                        print(f'k={k:.0e},drag={drag:.0e}>>>>>Percent Overlap =', percentOverlap)    
+                        #print('>>>>>Percent Overlap =', percentOverlap)
+                    elif not silence:
+                        print('Percent Overlap =', percentOverlap)
                     #if (isinstance(percentOverlap, float) and percentOverlap < 5 and coeff > 0.4 and coeff < 0.6):
                     #    print('='*30)
                     #    #print(f'k = {k}, drag = {drag}')

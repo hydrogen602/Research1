@@ -157,14 +157,12 @@ void collision(double k, double drag) {
     g.end();
 }
 
-
+/**
+ * Ignoring drag for now
+ */
 void collisionNoGraphics(double k, double drag) {
 
-    const double h = 1e-5;
-    std::cerr << "> k = " << k << ", drag = " << drag << '\n';
-    State sys(h, 0, 0, k, drag);
-
-    double r = 5e-8; // 130000 km
+    double r = 1e-8; // 130000 km
 
     // 0.5g/cm^3
 
@@ -181,6 +179,14 @@ void collisionNoGraphics(double k, double drag) {
 
     double rho = 1.925;//7.7;//1.925; //129000; sat mass/ ring radius^3
     double mass = 4/3.0 * 3.14159 * r * r * r * rho;
+
+
+    drag = 0.219305 * sqrt( k / mass ) * 10e-21;
+
+
+    const double h = 1e-5;
+    std::cerr << "> k = " << k << ", drag = " << drag << '\n';
+    State sys(h, 0, 0, k, drag);
 
     sys.addBody(-2 * r, 0, 0, 2e-8, 0, 0, mass, r);
     sys.addBody(2 * r, 0, 0, -2e-8, 0, 0, mass, r);

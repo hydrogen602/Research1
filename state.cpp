@@ -78,7 +78,10 @@ double State::computePotentialEnergy() const {
 }
 
 double State::computeEnergy() const {
-    return computeKineticEnergy() + computePotentialEnergy();
+    double K = computeKineticEnergy();
+    double U = computePotentialEnergy();
+    //std::cerr << "> K, U = " << K << ", " << U << '\n';
+    return K + U;
 }
 
 vector3 State::getPosition(int objNum) const {
