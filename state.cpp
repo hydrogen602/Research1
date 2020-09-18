@@ -10,8 +10,9 @@
 State::State(double hVal, double maxXArg, double maxYArg, double kArg, double dragCoeff): h{hVal}, maxX{maxXArg}, maxY{maxYArg}, k{kArg}, drag{dragCoeff} {
     std::cout << "k = " << k << "\n";
     std::cerr << "maxX = " << maxX << "; maxY = " << maxY << '\n';
-
 }
+
+// State::State(double hVal): h{hVal} {}
 
 void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz) {
   data.addBody(x, y, z, vx, vy, vz);
