@@ -3,11 +3,16 @@
 #include <cstdio>
 #include <cmath>
 #include "state.h"
+#include "data/vector3.h"
 
 #define square(x) ((x) * (x))
 
+State::State(double hVal, double maxXArg, double maxYArg, double kArg, double dragCoeff): h{hVal}, maxX{maxXArg}, maxY{maxYArg}, k{kArg}, drag{dragCoeff} {
+    std::cout << "k = " << k << "\n";
+    std::cerr << "maxX = " << maxX << "; maxY = " << maxY << '\n';
+}
 
-State::State(double hVal): h{hVal} {}
+// State::State(double hVal): h{hVal} {}
 
 void State::addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz) {
   data.addBody(x, y, z, vx, vy, vz);
@@ -74,7 +79,26 @@ double State::computePotentialEnergy() const {
 }
 
 double State::computeEnergy() const {
-    return computeKineticEnergy() + computePotentialEnergy();
+    double K = computeKineticEnergy();
+    double U = computePotentialEnergy();
+    //std::cerr << "> K, U = " << K << ", " << U << '\n';
+    return K + U;
+}
+
+vector3 State::getPosition(int objNum) const {
+    int i = objNum * 6;
+    vector3 p = {data[i+0], data[i+1], data[i+2]};
+    return p;
+}
+
+vector3 State::getVelocity(int objNum) const {
+    int i = objNum * 6;
+    vector3 v = {data[i+3], data[i+4], data[i+5]};
+    return v;
+}
+
+double State::getSize(int objNum) const {
+    return sizes[objNum];
 }
 
 void State::derivative(Vector& d) const {
@@ -97,7 +121,7 @@ void State::derivative(Vector& d) const {
 
         // find acceleration
 
-        vect3 accVector = {0, 0, 0};
+        vector3 accVector(0, 0, 0);
 
         for (unsigned int j = 0; j < data.size(); j += 6) {
             if (i != j) {
@@ -113,42 +137,46 @@ void State::derivative(Vector& d) const {
                 double d = sqrt(dSq); // length of vector
                 // and distance between objects
 
-                vect3 c;
-                c.x = data[j] - data[i];
-                c.y = data[j+1] - data[i+1];
-                c.z = data[j+2] - data[i+2];
+                vector3 c(data[j] - data[i], data[j+1] - data[i+1], data[j+2] - data[i+2]);
                 // now c is a vector pointing to b from this
-                c.x /= d;
-                c.y /= d;
-                c.z /= d;
+                c /= d;
                 // c is displacement unit vector
 
-                vect3 acc = c; // make a copy
+                vector3 acc = c; // make a copy
 
                 // c is now a unit vector pointing to object j
 
-                acc.x *= accScalar;
-                acc.y *= accScalar;
-                acc.z *= accScalar;
+                acc *= accScalar;
 
-                accVector.x += acc.x;
-                accVector.y += acc.y;
-                accVector.z += acc.z; // i and j forces get calculated twice
+                //fprintf(stderr, "<%e, %e, %e>\n", acc.x, acc.y, acc.z);
+
+                accVector += acc;
+                // i and j forces get calculated twice
 
                 // deal with collisions
                 double deltaX = d - (sizes[j / 6] + sizes[i / 6]);
                 if (deltaX < 0) {
                     // intersection!
 
-                    // in dir -c (away from other object)
-                    double a = -k * deltaX / masses[i / 6];
-                    c.x *= a;
-                    c.y *= a;
-                    c.z *= a;
+                    //std::cerr << "intersection " << fabs(deltaX / (sizes[j / 6] + sizes[i / 6])) * 100 << "%\n";
 
-                    accVector.x += c.x;
-                    accVector.y += c.y;
-                    accVector.z += c.z;
+                    vector3 vI = {data[i+3], data[i+4], data[i+5]};
+                    vector3 vJ = {data[j+3], data[j+4], data[j+5]};
+
+                    vector3 rel = vJ - vI;
+
+                    double vMag = rel.dot(c);
+
+                    // in dir -c (away from other object)
+                    double a = (-k * -deltaX + drag * vMag) / masses[i / 6];
+                    
+
+                    accVector += (c * a);
+
+                    //fprintf(stderr, "object %d\n", i);
+                    //fprintf(stderr, "deltaX = %e\n", deltaX);
+                    //fprintf(stderr, "<%e, %e, %e>\n", c.x, c.y, c.z);
+                    //fprintf(stderr, "<%e, %e, %e>\n", accVector.x, accVector.y, accVector.z);
                 }
             }
         }
@@ -272,8 +300,24 @@ State State::operator+=(Vector delta) {
         throw ERR_VECTOR_SIZE_MISMATCH;
     }
 
-    for (unsigned int i = 0; i < data.size(); ++i) {
+    // boundary conditions!
+
+    for (unsigned int i = 0; i < data.size(); i += 6) {
         data[i] += delta[i];
+        data[i + 1] += delta[i + 1];
+        data[i + 2] += delta[i + 2];
+        data[i + 3] += delta[i + 3];
+        data[i + 4] += delta[i + 4];
+        data[i + 5] += delta[i + 5];
+
+        // if (data[i] < -maxX || data[i] > maxX) {
+        //     data[i] *= -1;
+        //     std::cerr << "flipped\n";
+        // }
+
+        // if (data[i + 1] < -maxY || data[i + 1] > maxY) {
+        //     data[i + 1] *= -1;
+        // }
     }
 
     return *this;

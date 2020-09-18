@@ -8,13 +8,15 @@
 
 #define DEBUG 0
 
-const double k = 1;
+const double kDefault = 1e10 * 10;
 
-typedef struct vector3 {
-    double x;
-    double y;
-    double z;
-} vect3;
+// deprecated
+// 
+// typedef struct vector3 { 
+//     double x;
+//     double y;
+//     double z;
+// } vect3;
 
 class State
 {
@@ -24,12 +26,18 @@ private:
     std::vector<double> sizes;
     const double h;
 
+    const double maxX;
+    const double maxY;
+
+    const double k;
+    const double drag;
+
     double computePotentialEnergy() const;
 
     double computeKineticEnergy() const;
 
-public:    
-    State(double hVal);
+public:
+    State(double hVal, double maxXArg, double maxYArg, double kArg, double dragCoeff);
 
     void addBody(double x, double y, double z, double vx, double vy, double vz, double m, double sz);
 
@@ -42,6 +50,12 @@ public:
     void kickStep1();
 
     void rk4();
+
+    vector3 getPosition(int objNum) const;
+
+    vector3 getVelocity(int objNum) const;
+
+    double getSize(int objNum) const;
 
     double& operator[](unsigned int i);
 

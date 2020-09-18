@@ -1,10 +1,10 @@
 CC = g++
-
 CFLAGS = -Wall -pedantic -Ofast -std=c++11
 LDLIBS = -lm -lncurses
 
 SRCS := $(wildcard *.cpp)
 SRCS += $(wildcard graphics/*.cpp)
+SRCS += $(wildcard data/*.cpp)
 OBJS := $(SRCS:%.cpp=%.o)
 
 HEADERS := $(wildcard *.h)
@@ -15,16 +15,28 @@ run: main
 	./main 2> run.err.log
 
 main: ${OBJS}
-	${CC} -o main main.o state.o vector.o graphics/graphics.o ${LDLIBS}
+	${CC} -o main main.o state.o vector.o graphics/graphics.o data/vector3.o graphics/screenState.o ${LDLIBS}
+
+tests: ${OBJS}
+	${CC} -o tests tests.o state.o vector.o graphics/graphics.o data/vector3.o ${LDLIBS}
 
 %.o: %.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
+program.o: program.c
+	gcc -c program.c -o program.o
+
+program: program.o
+	gcc -o program program.o -lm
+
 graphics/%.o: graphics/%.cpp ${HEADERS}
 	${CC} -c ${CFLAGS} $< -o $@
 
+data/%.o: data/%.cpp ${HEADERS}
+	${CC} -c ${CFLAGS} $< -o $@
+
 clean:
-	rm -f *.o main
+	rm -f *.o graphics/*.o data/*.o main
 
 clean-log:
 	rm -f *.log
